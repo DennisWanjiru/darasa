@@ -7,6 +7,7 @@ import Logo from "@/components/Logo";
 
 export default function SigniForm() {
   const supabase = createClientComponentClient<Database>();
+  console.log({ redirect: `${location.origin}/auth/callback` });
 
   return (
     <main className="flex flex-col items-center justify-center h-screen bg-secondary px-8">
