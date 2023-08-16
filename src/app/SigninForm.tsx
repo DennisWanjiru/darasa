@@ -5,8 +5,6 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/schema";
 import Logo from "@/components/Logo";
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 
 export default function SigniForm() {
   const supabase = createClientComponentClient<Database>();
@@ -21,7 +19,7 @@ export default function SigniForm() {
           view="magic_link"
           showLinks={false}
           providers={[]}
-          redirectTo={`${location.origin}/onboarding/callback`}
+          redirectTo={`${location.origin}/auth/callback`}
           appearance={{
             style: {
               button: {

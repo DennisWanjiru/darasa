@@ -1,19 +1,27 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import SigninForm from "@/app/SigninForm";
+import React from "react";
 
-export default async function Login() {
+export default async function Account() {
   const supabase = createServerComponentClient({ cookies });
 
   const {
     data: { session },
-    error,
   } = await supabase.auth.getSession();
 
-  if (session) {
+  if (!session) {
     redirect("/");
   }
 
-  return <SigninForm />;
+  const { data: users } = await supabase
+    .from("profile")
+    .select("email")
+    .eq("email", session.user.email);
+
+  if (users?.length) {
+    redirect("/dashboard");
+  }
+
+  return <div>Account</div>;
 }
