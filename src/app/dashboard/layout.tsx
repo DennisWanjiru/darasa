@@ -1,15 +1,8 @@
-import {
-  createPagesBrowserClient,
-  createServerComponentClient,
-} from "@supabase/auth-helpers-nextjs";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import "../globals.css";
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
-import { useEffect, useState } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { cookies } from "next/headers";
-
-const nunito = Nunito({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Darasa | Dahsboard",
@@ -41,9 +34,9 @@ export default async function DashboardLayout({
   }
 
   return (
-    <html lang="en">
-      <h1>Dashboard</h1>
-      <body className={nunito.className}>{children}</body>
-    </html>
+    <>
+      <aside>Sidebar</aside>
+      <main>{children}</main>
+    </>
   );
 }

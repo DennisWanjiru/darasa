@@ -3,7 +3,7 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/types/schema";
+import { Database } from "@/lib/schema";
 import Logo from "@/components/Logo";
 
 export default function SigniForm() {
