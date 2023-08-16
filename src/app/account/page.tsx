@@ -17,23 +17,19 @@ export default async function Account() {
     redirect("/");
   }
 
-  const { data: users, error: userError } = await supabase
+  const { data: users } = await supabase
     .from("profile")
     .select("email")
     .eq("email", session.user.email);
-
-  if (userError) throw userError;
 
   if (users?.length) {
     redirect("/dashboard");
   }
 
   const res = await supabase.from("major").select("*");
-  if (res.error) throw res.error;
   const majors = res.data as Major[] | null;
 
   const rolesRes = await supabase.from("role").select("*");
-  if (rolesRes.error) throw rolesRes.error;
   const roles = rolesRes.data as Role[] | null;
 
   return (

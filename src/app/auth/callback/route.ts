@@ -8,19 +8,13 @@ import type { Database } from "@/lib/schema";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
-  try {
-    const requestUrl = new URL(request.url);
-    const code = requestUrl.searchParams.get("code");
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
 
-    if (code) {
-      const supabase = createRouteHandlerClient<Database>({ cookies });
-      const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-      if (error) throw error;
-    }
-
-    return NextResponse.redirect(`${requestUrl.origin}/dashboard`);
-  } catch (error) {
-    console.log({ error });
+  if (code) {
+    const supabase = createRouteHandlerClient<Database>({ cookies });
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
   }
+
+  return NextResponse.redirect(`${requestUrl.origin}/dashboard`);
 }
