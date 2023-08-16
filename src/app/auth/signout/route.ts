@@ -6,12 +6,18 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-  const requestUrl = new URL(request.url);
-  const supabase = createRouteHandlerClient<Database>({ cookies });
+  try {
+    const requestUrl = new URL(request.url);
+    const supabase = createRouteHandlerClient<Database>({ cookies });
 
-  await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
 
-  return NextResponse.redirect(requestUrl.origin, {
-    status: 301,
-  });
+    if (error) throw error;
+
+    return NextResponse.redirect(requestUrl.origin, {
+      status: 301,
+    });
+  } catch (error) {
+    console.log({ error });
+  }
 }

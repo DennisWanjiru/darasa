@@ -5,8 +5,16 @@ import type { NextRequest } from "next/server";
 import type { Database } from "@/lib/schema";
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient<Database>({ req, res });
-  await supabase.auth.getSession();
-  return res;
+  try {
+    const res = NextResponse.next();
+    const supabase = createMiddlewareClient<Database>({ req, res });
+    const { error } = await supabase.auth.getSession();
+    if (error) {
+      throw error;
+    }
+
+    return res;
+  } catch (error) {
+    console.log({ error });
+  }
 }

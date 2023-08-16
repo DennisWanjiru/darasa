@@ -1,5 +1,3 @@
-import React from "react";
-
 import SvgIcon from "@/assets/logo.svg";
 import Image from "next/image";
 

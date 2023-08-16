@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Darasa a school management system",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardLayout({
   children,
 }: {
@@ -18,7 +20,12 @@ export default async function DashboardLayout({
 
   const {
     data: { session },
+    error,
   } = await supabase.auth.getSession();
+
+  if (error) {
+    throw error;
+  }
 
   if (!session) {
     redirect("/");

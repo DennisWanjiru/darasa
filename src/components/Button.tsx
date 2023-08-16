@@ -1,4 +1,3 @@
-import React, { ButtonHTMLAttributes } from "react";
 import Save from "@/assets/save.svg";
 import Image from "next/image";
 

@@ -1,9 +1,10 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
-import Add from "@/assets/add.svg";
 
+import Add from "@/assets/add.svg";
 import { Database } from "@/lib/schema";
 
 type Profile = Database["public"]["Tables"]["profile"]["Row"];
@@ -66,7 +67,8 @@ export default function Avatar({
 
       onUpload(filePath);
     } catch (error) {
-      alert("Error uploading avatar!");
+      // TODO: show error
+      console.log("Error uploading avatar!");
     } finally {
       setUploading(false);
     }

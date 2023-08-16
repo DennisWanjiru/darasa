@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Darasa a school management system",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: {
