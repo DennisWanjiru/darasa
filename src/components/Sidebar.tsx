@@ -57,12 +57,7 @@ export default async function Sidebar() {
             active={pathname === "/dashboard"}
             Icon={DashIcon}
           />
-          <NavLink
-            to="/dashboard/classes"
-            active={pathname === "/dashboard/classes"}
-            title="Classes"
-            Icon={Pile}
-          />
+
           <NavLink
             title="Explore"
             to="/dashboard/explore"
@@ -75,9 +70,9 @@ export default async function Sidebar() {
             <Image
               src={`${process.env.NEXT_PUBLIC_STORAGE_BUCKET_URL}/avatars/${user.avatar_url}`}
               alt={user.name}
-              width={44}
-              height={44}
-              className="h-11 w-11 rounded-xl"
+              width={48}
+              height={48}
+              className="h-12 w-12 rounded-xl"
             />
           ) : null}
 
