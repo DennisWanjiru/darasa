@@ -6,8 +6,7 @@ import Image from "next/image";
 
 import Add from "@/assets/add.svg";
 import { Database } from "@/lib/schema";
-
-type Profile = Database["public"]["Tables"]["profile"]["Row"];
+import { Profile } from "@/lib/types";
 
 export default function Avatar({
   uid,
@@ -55,7 +54,7 @@ export default function Avatar({
 
       const file = event.target.files[0];
       const fileExt = file.name.split(".").pop();
-      const filePath = `${uid}-${Math.random()}.${fileExt}`;
+      const filePath = `${uid}-${Date.now()}.${fileExt}`;
 
       let { error: uploadError } = await supabase.storage
         .from("avatars")

@@ -1,11 +1,20 @@
-import SvgIcon from "@/assets/logo.svg";
 import Image from "next/image";
 
-export default function Logo() {
+import LogoIcon from "@/assets/logo.svg";
+import LogoIconDark from "@/assets/logo-dark.svg";
+import { ComponentProps } from "react";
+
+type Props = {
+  theme?: "dark" | "light";
+  className?: string;
+};
+
+export default function Logo({ theme, ...props }: Props) {
   return (
-    <div className="flex items-center space-x-4">
-      <Image src={SvgIcon} height={30} width={38} alt="darasa-logo" />
-      <h1 className="text-[24px] font-semibold">Darasa</h1>
-    </div>
+    <Image
+      alt="darasa-logo"
+      src={theme === "dark" ? LogoIconDark : LogoIcon}
+      {...props}
+    />
   );
 }
