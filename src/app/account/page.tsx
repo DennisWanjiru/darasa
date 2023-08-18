@@ -33,7 +33,7 @@ export default async function Account() {
   const roles = rolesRes.data as Role[] | null;
 
   return (
-    <main className="flex flex-col h-screen w-screen items-center justify-center px-16 md:p-0">
+    <main className="flex flex-col h-screen w-screen items-center justify-center px-16 md:p-0 text-primary">
       <Logo />
       <AccountForm
         session={session}

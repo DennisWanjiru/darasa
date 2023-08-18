@@ -8,11 +8,6 @@ import Logo from "@/components/Logo";
 export default function SigniForm() {
   const supabase = createClientComponentClient<Database>();
 
-  /* eslint-disable */
-  console.log({
-    redirect: `${location.origin}/auth/callback`,
-  });
-
   return (
     <main className="flex flex-col items-center justify-center h-screen bg-secondary px-8">
       <Logo />
@@ -34,17 +29,21 @@ export default function SigniForm() {
               },
               input: {
                 background: "#F6F5F5",
-                color: "#030229",
+                color: "#000",
                 height: "50px",
                 paddingLeft: "20px",
                 paddingRight: "20px",
                 borderRadius: "10px",
-                borderColor: "#f6f5f5",
+                borderColor: "#000",
                 marginTop: "16px",
+                borderWidth: 2,
               },
               label: {
                 fontWeight: 600,
-                color: "#030229",
+                color: "#000",
+              },
+              message: {
+                color: "#000",
               },
             },
           }}

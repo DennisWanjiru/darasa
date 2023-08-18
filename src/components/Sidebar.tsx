@@ -1,13 +1,11 @@
-import Image from "next/image";
 import { cookies, headers } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import Logo from "./Logo";
 import NavLink from "./NavLink";
-import Pile from "@/assets/pile.svg";
 import DashIcon from "@/assets/dashboard.svg";
 import Explore from "@/assets/explore.svg";
-import UpDown from "@/assets/up-down.svg";
+import SidebarFooter from "./SidebarFooter";
 
 export default async function Sidebar() {
   const supabase = createServerComponentClient({ cookies });
@@ -65,23 +63,7 @@ export default async function Sidebar() {
             Icon={Explore}
           />
         </ul>
-        <footer className="px-6 flex items-center justify-between">
-          {user?.avatar_url ? (
-            <Image
-              src={`${process.env.NEXT_PUBLIC_STORAGE_BUCKET_URL}/avatars/${user.avatar_url}`}
-              alt={user.name}
-              width={48}
-              height={48}
-              className="h-12 w-12 rounded-xl"
-            />
-          ) : null}
-
-          <div className="flex flex-col">
-            <p>{user?.name}</p>
-            <p>{user?.role === "student" ? "Student" : "Instuctor"} Account</p>
-          </div>
-          <Image src={UpDown} alt="more" />
-        </footer>
+        <SidebarFooter user={user} />
       </nav>
     </aside>
   );

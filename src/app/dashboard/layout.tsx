@@ -51,7 +51,7 @@ export default async function DashboardLayout({
   return (
     <div className="bg-primary h-screen text-secondary flex">
       <Sidebar />
-      <main className="bg-tertiary mt-4 w-full rounded-t-[20px] py-10 px-10 text-primary">
+      <main className="bg-tertiary mt-4 w-full rounded-tl-[20px] py-10 px-10 text-primary">
         {children}
       </main>
     </div>
