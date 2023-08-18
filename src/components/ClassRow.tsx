@@ -46,7 +46,7 @@ export default async function ClassRow({ data }: Props) {
           </div>
           <div>
             <div className="font-semibold text-blue-500">
-              Prof. Hart Hagerty
+              {instructor?.prefix}. {instructor?.name}
             </div>
           </div>
         </div>

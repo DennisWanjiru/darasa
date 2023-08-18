@@ -1,47 +1,17 @@
-import { cookies, headers } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { headers } from "next/headers";
 
 import Logo from "./Logo";
 import NavLink from "./NavLink";
 import DashIcon from "@/assets/dashboard.svg";
 import Explore from "@/assets/explore.svg";
 import SidebarFooter from "./SidebarFooter";
+import getCurrentUser from "@/actions/getCurrentUser";
 
 export default async function Sidebar() {
-  const supabase = createServerComponentClient({ cookies });
   const headersList = headers();
   const pathname = headersList.get("x-invoke-path") || "";
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  const getUser = async () => {
-    try {
-      if (session) {
-        const email = session.user.email;
-        const { data: users, error } = await supabase
-          .from("profile")
-          .select("*")
-          .eq("email", session.user.email);
-
-        if (error) throw error;
-
-        if (users[0]) {
-          const { data: roles, error } = await supabase
-            .from("role")
-            .select("name")
-            .eq("id", users[0].role_id);
-
-          return { ...users[0], role: roles ? roles[0].name : "" };
-        }
-      }
-    } catch (error) {
-      console.log({ error });
-    }
-  };
-
-  const user: any = await getUser();
+  const user = await getCurrentUser();
 
   return (
     <aside className="w-80 pt-12 h-scren ">

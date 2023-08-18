@@ -9,19 +9,16 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Class } from "@/lib/types";
 import { createAvatarUrl } from "@/lib/utils";
+import getCurrentUser from "@/actions/getCurrentUser";
 
 export default async function Home() {
   const supabase = createServerComponentClient({ cookies });
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  const studentId = session?.user.id;
+  const currentUser = await getCurrentUser();
 
   const { data: enrollments } = await supabase
     .from("enrollment")
     .select(`id, class(*)`)
-    .eq("student_id", studentId ?? "");
+    .eq("student_id", currentUser?.id ?? "");
 
   const classes = enrollments?.map((enrollment) => enrollment.class) as
     | Class[]
