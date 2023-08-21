@@ -1,9 +1,12 @@
 import Image from "next/image";
 import UpDown from "@/assets/up-down.svg";
 import { getUserFirstLetter } from "@/lib/utils";
+import ViewProfileLink from "./ViewProfileLink";
+import ProfileModal from "./ProfileModal";
+import { CurrentUser } from "@/lib/types";
 
 type Props = {
-  user: any;
+  user?: CurrentUser;
 };
 
 export default function SidebarFooter({ user }: Props) {
@@ -22,7 +25,7 @@ export default function SidebarFooter({ user }: Props) {
             className="h-12 w-12 rounded-xl"
           />
         ) : (
-          <div className=" flex items-center justify-center text-2xl h-12 w-12 text-white rounded-xl bg-green-800">
+          <div className=" flex items-center justify-center text-2xl w-12 text-white rounded-xl bg-green-800">
             {getUserFirstLetter(user?.name ?? "U")}
           </div>
         )}
@@ -38,15 +41,15 @@ export default function SidebarFooter({ user }: Props) {
         tabIndex={0}
         className="dropdown-content z-[1] menu p-2 bg-secondary rounded-box w-52 text-primary shadow-md mb-5 m-7"
       >
-        <li>
-          <a>View Profile</a>
-        </li>
+        <ViewProfileLink />
         <form action="" method="post">
           <li>
             <button formAction="/auth/signout">Signout</button>
           </li>
         </form>
       </ul>
+
+      {user ? <ProfileModal user={user} /> : null}
     </footer>
   );
 }

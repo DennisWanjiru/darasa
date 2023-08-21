@@ -111,6 +111,7 @@ const AccountForm = ({ majors, roles, session }: Props) => {
         type="email"
         error={errors.email?.message}
         register={register}
+        disabled
       />
 
       <InputField

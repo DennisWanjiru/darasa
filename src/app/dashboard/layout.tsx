@@ -4,13 +4,8 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
 import "../globals.css";
-import DashIcon from "@/assets/dashboard.svg";
-import Pile from "@/assets/pile.svg";
-import Explore from "@/assets/explore.svg";
-import Logo from "@/components/Logo";
-import Image from "next/image";
-import NavLink from "@/components/NavLink";
 import Sidebar from "@/components/Sidebar";
+import Modal from "@/components/ProfileModal";
 
 export const metadata: Metadata = {
   title: "Darasa | Dahsboard",
