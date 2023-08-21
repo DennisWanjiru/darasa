@@ -1,10 +1,10 @@
 import { Class } from "@/lib/types";
-import { createAvatarUrl, getUserFirstLetter } from "@/lib/utils";
+import { cn, createAvatarUrl, getUserFirstLetter } from "@/lib/utils";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import Supa from "@/assets/supaman.jpeg";
 import Image from "next/image";
 import Button from "./Button";
+import { differenceInDays, format } from "date-fns";
 
 type Props = {
   data: Class;
@@ -12,7 +12,7 @@ type Props = {
 
 export default async function ClassRow({ data }: Props) {
   const supabase = createServerComponentClient({ cookies });
-  const { instructor_id, code, name } = data;
+  const { instructor_id, code, name, start_date, end_date } = data;
 
   const { data: instructors } = await supabase
     .from("profile")
@@ -20,6 +20,27 @@ export default async function ClassRow({ data }: Props) {
     .eq("id", instructor_id);
 
   const instructor = instructors ? instructors[0] : null;
+
+  const getStatus = () => {
+    const startDiff = differenceInDays(new Date(start_date), new Date());
+    const endDiff = differenceInDays(new Date(end_date), new Date());
+
+    if (startDiff <= 0 && endDiff >= 0) {
+      return "Active";
+    }
+
+    if (startDiff > 0) {
+      return "Upcoming";
+    }
+
+    if (endDiff < 0) {
+      return "Completed";
+    }
+
+    return "Unknown";
+  };
+
+  const status = getStatus();
 
   return (
     <tr className="border-0">
@@ -52,10 +73,16 @@ export default async function ClassRow({ data }: Props) {
         </div>
       </td>
 
-      <td className="invert-[.3]">91</td>
-      <td className="invert-[.3]">A</td>
+      <td className="invert-[.3]">-</td>
+      <td className="invert-[.3]">-</td>
       <td className="w-28">
-        <Button title="Active" className="h-7 bg-green-800 text-xs" />
+        <Button
+          title={status}
+          className={cn("h-7 bg-green-800 text-xs", {
+            "bg-blue-800": status === "Upcoming",
+            "bg-gray-800": status === "Completed",
+          })}
+        />
       </td>
     </tr>
   );
