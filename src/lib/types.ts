@@ -11,3 +11,14 @@ export type Grade = Database["public"]["Tables"]["grade"]["Row"];
 export type CurrentUser = Profile & {
   role: "student" | "instructor";
 };
+
+export type GradeData = {
+  id?: string;
+  email: string;
+  name: string;
+  major: string;
+  grade?: number;
+  student_id: string;
+  class_id: string;
+  avatar_url?: string;
+};
