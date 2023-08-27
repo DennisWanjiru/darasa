@@ -36,3 +36,17 @@ export const getStatus = (start_date: string, end_date: string) => {
 
   return "Unknown";
 };
+
+export function calculateGrade(marks: number): string {
+  if (marks >= 90) {
+    return "A";
+  } else if (marks >= 80) {
+    return "B";
+  } else if (marks >= 70) {
+    return "C";
+  } else if (marks >= 60) {
+    return "D";
+  } else {
+    return "F";
+  }
+}

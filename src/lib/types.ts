@@ -5,6 +5,8 @@ export type Role = Database["public"]["Tables"]["role"]["Row"];
 export type Profile = Database["public"]["Tables"]["profile"]["Row"];
 export type ClassType = Database["public"]["Tables"]["class"]["Row"];
 export type Category = Database["public"]["Tables"]["category"]["Row"];
+export type Enrollment = Database["public"]["Tables"]["enrollment"]["Row"];
+export type Grade = Database["public"]["Tables"]["grade"]["Row"];
 
 export type CurrentUser = Profile & {
   role: "student" | "instructor";

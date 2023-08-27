@@ -11,6 +11,7 @@ import Image from "next/image";
 import Button from "./Button";
 import Edit from "@/assets/edit.svg";
 import Delete from "@/assets/delete.svg";
+import Link from "next/link";
 
 type Props = {
   data: ClassType;
@@ -29,6 +30,7 @@ export default async function InstructorClassRow({ data }: Props) {
   const status = getStatus(start_date, end_date);
 
   return (
+    // <Link key={data.id} className="w-full" href={`/dashboard/classes/${id}`}>
     <tr className="border-0">
       <td className="invert-[.3]">{code}</td>
       <td className="text-blue-500">
@@ -75,5 +77,6 @@ export default async function InstructorClassRow({ data }: Props) {
         </div>
       </td>
     </tr>
+    // </Link>
   );
 }
