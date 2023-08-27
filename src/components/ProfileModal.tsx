@@ -39,7 +39,7 @@ const schema = z.object({
 });
 
 export default function ProfileModal({ user }: Props) {
-  const { id, avatar_url, email, name, major_id, bio } = user;
+  const { id, avatar_url, email, name, major_id, bio, prefix } = user;
   const supabase = createClientComponentClient();
   const [majors, setMajors] = useState<Options>();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -56,6 +56,7 @@ export default function ProfileModal({ user }: Props) {
       name,
       bio,
       major_id,
+      prefix,
     },
   });
 
@@ -79,8 +80,6 @@ export default function ProfileModal({ user }: Props) {
 
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
     try {
-      console.log({ formData });
-
       const { data: user, error } = await supabase
         .from("profile")
         .update(formData)
@@ -101,6 +100,14 @@ export default function ProfileModal({ user }: Props) {
   const avatar = user?.avatar_url
     ? `${process.env.NEXT_PUBLIC_STORAGE_BUCKET_URL}/avatars/${user.avatar_url}`
     : null;
+
+  const prefixes = [
+    { label: "Prof", value: "Prof" },
+    { label: "Dr", value: "Dr" },
+    { label: "PhD", value: "PhD" },
+    { label: "Mr", value: "Mr" },
+    { label: "Mrs", value: "Mrs" },
+  ];
 
   return (
     <dialog id="profile" className="modal justify-end align-bottom">
@@ -134,6 +141,16 @@ export default function ProfileModal({ user }: Props) {
         </section>
 
         <section className=" mt-14">
+          {user.role === "instructor" ? (
+            <InputField
+              label="Prefix"
+              name="prefix"
+              type="select"
+              options={prefixes}
+              register={register}
+            />
+          ) : null}
+
           <InputField
             label="Name"
             name="name"
@@ -150,14 +167,16 @@ export default function ProfileModal({ user }: Props) {
             disabled
           />
 
-          <InputField
-            label="Major"
-            name="major_id"
-            type="select"
-            options={majors}
-            register={register}
-            disabled
-          />
+          {user.role === "student" ? (
+            <InputField
+              label="Major"
+              name="major_id"
+              type="select"
+              options={majors}
+              register={register}
+              disabled
+            />
+          ) : null}
 
           <TextAreaField
             label="Bio"
