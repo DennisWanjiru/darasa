@@ -1,11 +1,11 @@
-import { Class } from "@/lib/types";
-import ClassRow from "./ClassRow";
+import { ClassType } from "@/lib/types";
+import InstructorClassRow from "./InstructorClassRow";
 
 type Props = {
-  classes: Class[];
+  classes: ClassType[];
 };
 
-export default function ClassTable({ classes }: Props) {
+export default function StudentClassesTable({ classes }: Props) {
   return (
     <div className="overflow-x-auto overflow-y-scroll mt-7 max-h-[650px]">
       <table className="table">
@@ -22,7 +22,7 @@ export default function ClassTable({ classes }: Props) {
 
         <tbody>
           {classes.map((data) => (
-            <ClassRow key={data.id} data={data} />
+            <InstructorClassRow key={data.id} data={data} />
           ))}
         </tbody>
       </table>

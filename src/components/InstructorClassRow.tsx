@@ -5,21 +5,23 @@ import { cookies } from "next/headers";
 import Image from "next/image";
 import Button from "./Button";
 import { differenceInDays, format } from "date-fns";
+import Edit from "@/assets/edit.svg";
+import Delete from "@/assets/delete.svg";
 
 type Props = {
   data: ClassType;
 };
 
-export default async function ClassRow({ data }: Props) {
+export default async function InstructorClassRow({ data }: Props) {
   const supabase = createServerComponentClient({ cookies });
-  const { instructor_id, code, name, start_date, end_date } = data;
+  const { id, code, name, start_date, end_date, thumbnail } = data;
 
-  const { data: instructors } = await supabase
-    .from("profile")
-    .select()
-    .eq("id", instructor_id);
+  const { data: count } = await supabase
+    .from("enrollment")
+    .select("count")
+    .eq("class_id", id);
 
-  const instructor = instructors ? instructors[0] : null;
+  const totalStudents: number = count ? count[0].count : 0;
 
   const getStatus = () => {
     const startDiff = differenceInDays(new Date(start_date), new Date());
@@ -45,14 +47,13 @@ export default async function ClassRow({ data }: Props) {
   return (
     <tr className="border-0">
       <td className="invert-[.3]">{code}</td>
-      <td className="text-blue-500">{name}</td>
-      <td>
+      <td className="text-blue-500">
         <div className="flex items-center space-x-3">
           <div className="avatar">
-            <div className="mask mask-circle w-12 h-12 bg-green-800">
-              {instructor.avatar_url ? (
+            <div className="mask mask-squircle w-12 h-12 bg-green-800">
+              {thumbnail ? (
                 <Image
-                  src={createAvatarUrl(instructor.avatar_url)}
+                  src={createAvatarUrl(thumbnail)}
                   alt="cover"
                   height={48}
                   width={48}
@@ -60,21 +61,20 @@ export default async function ClassRow({ data }: Props) {
                 />
               ) : (
                 <div className=" flex items-center justify-center text-2xl h-12 w-12 text-white">
-                  {getUserFirstLetter(instructor.name)}
+                  {getUserFirstLetter(name)}
                 </div>
               )}
             </div>
           </div>
           <div>
-            <div className="font-semibold text-blue-500">
-              {instructor?.prefix}. {instructor?.name}
-            </div>
+            <div className="font-semibold text-blue-500">{name}</div>
           </div>
         </div>
       </td>
 
-      <td className="invert-[.3]">-</td>
-      <td className="invert-[.3]">-</td>
+      <td className="invert-[.3]">{start_date}</td>
+      <td>{end_date}</td>
+      <td className="invert-[.3]">{totalStudents}</td>
       <td className="w-28">
         <Button
           title={status}
@@ -83,6 +83,12 @@ export default async function ClassRow({ data }: Props) {
             "bg-gray-800": status === "Completed",
           })}
         />
+      </td>
+      <td className="w-28">
+        <div className="flex space-x-1.5 items-center">
+          <Image src={Edit} alt="edit" />
+          <Image height={30} width={30} src={Delete} alt="delete" />
+        </div>
       </td>
     </tr>
   );

@@ -1,6 +1,6 @@
-import getCurrentUser from "@/actions/getCurrentUser";
+import { getCurrentUser } from "@/lib/actions";
 import ClassCard from "@/components/ClassCard";
-import { Class } from "@/lib/types";
+import { ClassType } from "@/lib/types";
 import { createAvatarUrl } from "@/lib/utils";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -11,11 +11,9 @@ export default async function Index() {
   const supabase = createServerComponentClient({ cookies });
   const currentUser = await getCurrentUser();
 
-  const { data } = await supabase
-    .from("category")
-    .select(`name, class(id, code, name, thumbnail, instructor_id)`);
+  const { data } = await supabase.from("category").select(`name, class(*)`);
 
-  const categories = data as { name: string; class: Class[] }[] | null;
+  const categories = data as { name: string; class: ClassType[] }[] | null;
 
   const { data: enrollments } = await supabase
     .from("enrollment")
@@ -28,7 +26,7 @@ export default async function Index() {
     : [];
 
   return (
-    <div>
+    <div className="max-w-6xl mx-auto">
       <h2 className="font-bold text-2xl">Explore All Classes</h2>
 
       {categories
@@ -47,26 +45,27 @@ export default async function Index() {
                   <div className="flex space-x-6">
                     {classes
                       ? classes
-                          .slice(0, 2)
-                          .map(
-                            ({ id, code, name, thumbnail, instructor_id }) => (
-                              <ClassCard
-                                key={id}
-                                code={code}
-                                name={name}
-                                type={
-                                  !currentUserClasses.includes(id)
-                                    ? "enroll"
-                                    : undefined
-                                }
-                                thumbnail={
-                                  thumbnail ? createAvatarUrl(thumbnail) : Supa
-                                }
-                                instructorId={instructor_id}
-                                className="mt-6"
-                              />
-                            )
-                          )
+                          .slice(0, 3)
+                          .map((data) => (
+                            <ClassCard
+                              id={data.id}
+                              key={data.id}
+                              code={data.code}
+                              name={name}
+                              type={
+                                !currentUserClasses.includes(data.id)
+                                  ? "enroll"
+                                  : undefined
+                              }
+                              thumbnail={
+                                data.thumbnail
+                                  ? createAvatarUrl(data.thumbnail)
+                                  : Supa
+                              }
+                              instructorId={data.instructor_id}
+                              className="mt-6"
+                            />
+                          ))
                       : null}
                   </div>
                 </section>

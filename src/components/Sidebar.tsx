@@ -4,8 +4,9 @@ import Logo from "./Logo";
 import NavLink from "./NavLink";
 import DashIcon from "@/assets/dashboard.svg";
 import Explore from "@/assets/explore.svg";
+import Pile from "@/assets/pile.svg";
 import SidebarFooter from "./SidebarFooter";
-import getCurrentUser from "@/actions/getCurrentUser";
+import { getCurrentUser } from "@/lib/actions";
 
 export default async function Sidebar() {
   const headersList = headers();
@@ -26,12 +27,21 @@ export default async function Sidebar() {
             Icon={DashIcon}
           />
 
-          <NavLink
-            title="Explore"
-            to="/dashboard/explore"
-            active={pathname === "/dashboard/explore"}
-            Icon={Explore}
-          />
+          {user?.role === "instructor" ? (
+            <NavLink
+              title="Classes"
+              to="/dashboard/classes"
+              active={pathname === "/dashboard/classes"}
+              Icon={Pile}
+            />
+          ) : (
+            <NavLink
+              title="Explore"
+              to="/dashboard/explore"
+              active={pathname === "/dashboard/explore"}
+              Icon={Explore}
+            />
+          )}
         </ul>
         <SidebarFooter user={user} />
       </nav>

@@ -4,38 +4,104 @@ import Briefcase from "@/assets/briefcase.svg";
 import OverviewCard from "@/components/OverviewCard";
 import Supa from "@/assets/supaman.jpeg";
 import ClassCard from "@/components/ClassCard";
-import ClassTable from "@/components/ClassTable";
+import StudentClassesTable from "@/components/StudentClassesTable";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { Class } from "@/lib/types";
+import { ClassType } from "@/lib/types";
 import { createAvatarUrl } from "@/lib/utils";
-import getCurrentUser from "@/actions/getCurrentUser";
+import { getCurrentUser } from "@/lib/actions";
+import InstructorClassesTable from "@/components/InstructorClassesTable";
 
 export default async function Home() {
   const supabase = createServerComponentClient({ cookies });
   const currentUser = await getCurrentUser();
+  const role = currentUser?.role;
 
   const { data: enrollments } = await supabase
     .from("enrollment")
     .select(`id, class(*)`)
     .eq("student_id", currentUser?.id ?? "");
 
-  const classes = enrollments?.map((enrollment) => enrollment.class) as
-    | Class[]
+  const { data: instructorClasses } = await supabase
+    .from("class")
+    .select()
+    .eq("instructor_id", currentUser?.id ?? "");
+
+  const getCount = async (id: string) => {
+    const { data } = await supabase
+      .from("enrollment")
+      .select("count")
+      .eq("class_id", id);
+
+    if (data) {
+      const count: number = data[0].count;
+      return count;
+    }
+
+    return 0;
+  };
+
+  const mostEnrolled = {
+    count: 0,
+    code: "",
+  };
+
+  const counts = instructorClasses?.map(async ({ id, code }) => {
+    const total = await getCount(id);
+
+    if (total > mostEnrolled.count) {
+      mostEnrolled.count = total;
+      mostEnrolled.code = code;
+    }
+    return total;
+  });
+
+  const totalStudents = (await Promise.all(counts ?? [])).reduce(
+    (curr, prev) => curr + prev,
+    0
+  );
+
+  const enrolledClasses = enrollments?.map((enrollment) => enrollment.class) as
+    | ClassType[]
     | undefined;
+
+  const classes = role === "instructor" ? instructorClasses : enrolledClasses;
+
+  const getTime = () => {
+    const now = new Date();
+    const isMorning = now.getHours() > 5 && now.getHours() <= 12;
+    const isAfternoon = now.getHours() > 12 && now.getHours() <= 18;
+
+    if (isMorning) return "morning";
+    if (isAfternoon) return "afternoon";
+    return "evening";
+  };
 
   return (
     <div className="max-w-6xl mx-auto">
-      <h2 className="font-bold text-2xl">Good morning, Dennis</h2>
+      <h2 className="font-bold text-2xl">
+        Good {getTime()}, {currentUser?.prefix ? `${currentUser?.prefix}.` : ""}{" "}
+        {currentUser?.name.split(" ")[0]}
+      </h2>
 
       <section className="flex justify-between items-center space-x-9 mt-11">
         <OverviewCard
           title={String(classes?.length ?? 0)}
-          subTitle="Enrolled Classes"
+          subTitle={
+            role === "instructor" ? "Total Classes" : "Enrolled Classes"
+          }
           Icon={Heart}
         />
-        <OverviewCard title="B+" subTitle="Average Grade" Icon={Plus} />
-        <OverviewCard title="3.5" subTitle="GPA" Icon={Briefcase} />
+        <OverviewCard
+          title={role === "instructor" ? String(totalStudents) : "B+"}
+          subTitle={role === "instructor" ? "Total Students" : "Average Grade"}
+          Icon={Plus}
+        />
+        <OverviewCard
+          title={role === "instructor" ? mostEnrolled.code : "3.5"}
+          subTitle={role === "instructor" ? "Most Enrolled" : "GPA"}
+          Icon={Briefcase}
+        />
       </section>
 
       <section className="mt-10">
@@ -43,29 +109,48 @@ export default async function Home() {
 
         <div className="flex space-x-9 mt-4">
           {classes
-            ? classes.map(({ id, code, name, thumbnail, instructor_id }) => (
-                <ClassCard
-                  key={id}
-                  code={code}
-                  name={name}
-                  thumbnail={thumbnail ? createAvatarUrl(thumbnail) : Supa}
-                  instructorId={instructor_id}
-                />
-              ))
+            ? classes
+                .slice(0, 3)
+                .map(({ id, code, name, thumbnail, instructor_id }) => (
+                  <ClassCard
+                    id={id}
+                    key={id}
+                    code={code}
+                    name={name}
+                    thumbnail={thumbnail ? createAvatarUrl(thumbnail) : Supa}
+                    instructorId={instructor_id}
+                  />
+                ))
             : null}
         </div>
       </section>
 
       <section className="mt-10 p-7 bg-secondary rounded-2xl shadow-md">
         <h3 className="font-semibold text-lg">My Classes</h3>
-        {classes && classes.length ? (
-          <ClassTable classes={classes} />
+        {role === "student" ? (
+          <>
+            {classes && classes.length ? (
+              <StudentClassesTable classes={classes} />
+            ) : (
+              <div className="flex h-96 items-center justify-center">
+                <p className="font-medium text-lg text-gray-700">
+                  No Classes Found
+                </p>
+              </div>
+            )}
+          </>
         ) : (
-          <div className="flex h-96 items-center justify-center">
-            <p className="font-medium text-lg text-gray-700">
-              No Classes Found
-            </p>
-          </div>
+          <>
+            {instructorClasses && instructorClasses.length ? (
+              <InstructorClassesTable classes={instructorClasses} />
+            ) : (
+              <div className="flex h-96 items-center justify-center">
+                <p className="font-medium text-lg text-gray-700">
+                  No Classes Found
+                </p>
+              </div>
+            )}
+          </>
         )}
       </section>
     </div>

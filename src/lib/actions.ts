@@ -1,10 +1,10 @@
+"use server";
+
 import { CurrentUser, Profile } from "@/lib/types";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-const getCurrentUser = async () => {
-  "use server";
-
+export const getCurrentUser = async () => {
   const supabase = createServerComponentClient({ cookies });
   const {
     data: { session },
@@ -40,4 +40,20 @@ const getCurrentUser = async () => {
   }
 };
 
-export default getCurrentUser;
+export const enrollToClass = async (formData: any) => {
+  try {
+    const class_id = formData.get("class_id");
+    const currentUser = await getCurrentUser();
+
+    if (currentUser) {
+      const supabase = createServerComponentClient({ cookies });
+
+      await supabase
+        .from("enrollment")
+        .insert({ student_id: currentUser.id, class_id })
+        .select();
+    }
+  } catch (error) {
+    console.log({ error });
+  }
+};

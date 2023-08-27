@@ -31,7 +31,9 @@ export default function SidebarFooter({ user }: Props) {
         )}
 
         <div className="flex flex-col">
-          <p>{user?.name}</p>
+          <p>
+            {user?.prefix ? `${user?.prefix}.` : ""} {user?.name}
+          </p>
           <p>{user?.role === "student" ? "Student" : "Instuctor"} Account</p>
         </div>
         <Image src={UpDown} alt="more" />
