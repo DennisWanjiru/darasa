@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { ClassValue } from "clsx";
+import { differenceInDays } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export const cn = (...values: ClassValue[]) => {
@@ -16,3 +17,22 @@ export const createAvatarUrl = (path: string) => {
 
 export const getUserFirstLetter = (name: string) =>
   name.charAt(0).toUpperCase();
+
+export const getStatus = (start_date: string, end_date: string) => {
+  const startDiff = differenceInDays(new Date(start_date), new Date());
+  const endDiff = differenceInDays(new Date(end_date), new Date());
+
+  if (startDiff <= 0 && endDiff >= 0) {
+    return "Active";
+  }
+
+  if (startDiff > 0) {
+    return "Upcoming";
+  }
+
+  if (endDiff < 0) {
+    return "Completed";
+  }
+
+  return "Unknown";
+};

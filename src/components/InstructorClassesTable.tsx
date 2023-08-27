@@ -1,5 +1,4 @@
 import { ClassType } from "@/lib/types";
-import ClassRow from "./ClassRow";
 import InstructorClassRow from "./InstructorClassRow";
 
 type Props = {
@@ -11,7 +10,7 @@ export default function InstructorClassesTable({ classes }: Props) {
     <div className="overflow-x-auto overflow-y-scroll mt-7 max-h-[650px]">
       <table className="table">
         <thead>
-          <tr className="text-primary invert-[.1] border-0">
+          <tr className="text-primary invert-[.1] border-0 text-base">
             <th>Class Code</th>
             <th>Class Name</th>
             <th>Start Date</th>

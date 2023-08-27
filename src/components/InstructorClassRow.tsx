@@ -1,10 +1,14 @@
 import { ClassType } from "@/lib/types";
-import { cn, createAvatarUrl, getUserFirstLetter } from "@/lib/utils";
+import {
+  cn,
+  createAvatarUrl,
+  getStatus,
+  getUserFirstLetter,
+} from "@/lib/utils";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Button from "./Button";
-import { differenceInDays, format } from "date-fns";
 import Edit from "@/assets/edit.svg";
 import Delete from "@/assets/delete.svg";
 
@@ -23,26 +27,7 @@ export default async function InstructorClassRow({ data }: Props) {
 
   const totalStudents: number = count ? count[0].count : 0;
 
-  const getStatus = () => {
-    const startDiff = differenceInDays(new Date(start_date), new Date());
-    const endDiff = differenceInDays(new Date(end_date), new Date());
-
-    if (startDiff <= 0 && endDiff >= 0) {
-      return "Active";
-    }
-
-    if (startDiff > 0) {
-      return "Upcoming";
-    }
-
-    if (endDiff < 0) {
-      return "Completed";
-    }
-
-    return "Unknown";
-  };
-
-  const status = getStatus();
+  const status = getStatus(start_date, end_date);
 
   return (
     <tr className="border-0">
@@ -73,8 +58,8 @@ export default async function InstructorClassRow({ data }: Props) {
       </td>
 
       <td className="invert-[.3]">{start_date}</td>
-      <td>{end_date}</td>
-      <td className="invert-[.3]">{totalStudents}</td>
+      <td className="text-red-500">{end_date}</td>
+      <td className=" invert-[.3]">{totalStudents}</td>
       <td className="w-28">
         <Button
           title={status}

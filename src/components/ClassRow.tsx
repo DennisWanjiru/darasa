@@ -1,5 +1,10 @@
 import { ClassType } from "@/lib/types";
-import { cn, createAvatarUrl, getUserFirstLetter } from "@/lib/utils";
+import {
+  cn,
+  createAvatarUrl,
+  getStatus,
+  getUserFirstLetter,
+} from "@/lib/utils";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Image from "next/image";
@@ -21,26 +26,7 @@ export default async function ClassRow({ data }: Props) {
 
   const instructor = instructors ? instructors[0] : null;
 
-  const getStatus = () => {
-    const startDiff = differenceInDays(new Date(start_date), new Date());
-    const endDiff = differenceInDays(new Date(end_date), new Date());
-
-    if (startDiff <= 0 && endDiff >= 0) {
-      return "Active";
-    }
-
-    if (startDiff > 0) {
-      return "Upcoming";
-    }
-
-    if (endDiff < 0) {
-      return "Completed";
-    }
-
-    return "Unknown";
-  };
-
-  const status = getStatus();
+  const status = getStatus(start_date, end_date);
 
   return (
     <tr className="border-0">
