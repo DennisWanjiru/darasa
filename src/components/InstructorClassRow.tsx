@@ -26,7 +26,6 @@ export default async function InstructorClassRow({ data }: Props) {
     .eq("class_id", id);
 
   const totalStudents: number = count ? count[0].count : 0;
-
   const status = getStatus(start_date, end_date);
 
   return (

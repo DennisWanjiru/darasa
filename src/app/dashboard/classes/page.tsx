@@ -1,20 +1,23 @@
+import AddClassLink from "@/components/AddClassLink";
 import Button from "@/components/Button";
 import InstructorClassesTable from "@/components/InstructorClassesTable";
+import ProfileModal from "@/components/ProfileModal";
 import { getCurrentUser } from "@/lib/actions";
 import { getStatus } from "@/lib/utils";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import React from "react";
 
 export default async function Index() {
   const supabase = createServerComponentClient({ cookies });
   const currentUser = await getCurrentUser();
-  const role = currentUser?.role;
 
   const { data: classes, error } = await supabase
     .from("class")
     .select()
     .eq("instructor_id", currentUser?.id ?? "");
+
+  const { data: categories } = await supabase.from("category").select();
 
   const currentClasses = classes
     ? classes.filter(({ start_date, end_date }) => {
@@ -41,9 +44,13 @@ export default async function Index() {
     <div className="max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-11">
         <h2 className="font-bold text-2xl">My Classes</h2>
-        <div className="w-36">
-          <Button title="Add a Class" />
-        </div>
+        {currentUser?.role === "instructor" && categories ? (
+          <AddClassLink
+            categories={categories}
+            className="w-36"
+            currentUser={currentUser}
+          />
+        ) : null}
       </div>
 
       {currentClasses.length ? (
@@ -63,7 +70,7 @@ export default async function Index() {
       {completedClasses.length ? (
         <section className="mt-10 p-7 bg-secondary rounded-2xl shadow-md">
           <h3 className="font-semibold text-lg">Completed Classes</h3>
-          <InstructorClassesTable classes={currentClasses} />
+          <InstructorClassesTable classes={completedClasses} />
         </section>
       ) : null}
     </div>

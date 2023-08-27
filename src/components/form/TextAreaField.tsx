@@ -29,7 +29,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
         {...register(name, { required: `${label} is required` })}
         placeholder={placeholder}
         rows={rows}
-        className="max-h-28 p-2 bg-gray-100 mt-4 rounded-[10px] px-5 outline-0 focus:ring focus:ring-black"
+        className="max-h-28 p-2 bg-gray-100 mt-4 rounded-[10px] px-5 outline-0 focus:ring-2 focus:ring-black"
       />
       <span
         className={cn("text-red-700 text-xs mt-2 h-2", {

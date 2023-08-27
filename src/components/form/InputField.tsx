@@ -33,7 +33,7 @@ const InputField: React.FC<InputFieldProps> = ({
   const isEmail = type === "email";
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mb-3">
       <label className="font-semibold" htmlFor={name}>
         {label}
       </label>
@@ -63,7 +63,7 @@ const InputField: React.FC<InputFieldProps> = ({
           key={name}
           disabled={disabled}
           placeholder={placeholder}
-          className="h-12 bg-gray-100 mt-4 rounded-[10px] px-5 outline-0 focus:ring focus:ring-black disabled:text-gray-500 disabled:cursor-not-allowed"
+          className="h-12 bg-gray-100 mt-4 rounded-[10px] px-5 outline-0 focus:ring-2 focus:ring-black disabled:text-gray-500 disabled:cursor-not-allowed"
           {...register(name, { required: `${label} is required` })}
         />
       )}
