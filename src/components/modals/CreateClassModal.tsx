@@ -4,18 +4,18 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import Cancel from "@/assets/cancel.svg";
-import Avatar from "./Avatar";
+import ImageUploader from "../ImageUploader";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Database } from "@/lib/schema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import InputField from "./form/InputField";
-import TextAreaField from "./form/TextAreaField";
-import Button from "./Button";
+import InputField from "../form/InputField";
+import TextAreaField from "../form/TextAreaField";
+import Button from "../Button";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Category, CurrentUser } from "@/lib/types";
 
-import DatePickerField from "./form/DatePickerField";
+import DatePickerField from "../form/DatePickerField";
 
 type FormData = Database["public"]["Tables"]["class"]["Row"];
 type Props = {
@@ -49,10 +49,6 @@ export default function CreateClassModal({
   currentUser,
 }: Props) {
   const supabase = createClientComponentClient();
-  const [startDate, setStartDate] = useState<Date | null>(null);
-
-  const startDateRef = useRef(null);
-  const endDateRef = useRef(null);
 
   const {
     handleSubmit,
@@ -133,7 +129,7 @@ export default function CreateClassModal({
 
         <section className="flex mt-20 justify-center w-full">
           <div className="justify-center flex">
-            <Avatar
+            <ImageUploader
               uid="thumbnail"
               url={thumbnailUrl}
               onUpload={(url) => {

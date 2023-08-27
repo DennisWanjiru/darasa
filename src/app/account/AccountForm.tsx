@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import InputField from "@/components/form/InputField";
 import Button from "@/components/Button";
 import TextAreaField from "@/components/form/TextAreaField";
-import Avatar from "@/components/Avatar";
+import ImageUploader from "@/components/ImageUploader";
 import { Database } from "@/lib/schema";
 import { Major, Role } from "@/lib/types";
 import { Session } from "@supabase/supabase-js";
@@ -81,7 +81,7 @@ const AccountForm = ({ majors, roles, session }: Props) => {
       className="flex flex-col space-y-4 w-full md:w-1/3 mt-10"
     >
       <div className="justify-center flex">
-        <Avatar
+        <ImageUploader
           uid={"user.id"}
           url={avatarUrl}
           onUpload={(url) => {

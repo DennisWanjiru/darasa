@@ -8,8 +8,8 @@ import {
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import Button from "./Button";
 import { differenceInDays, format } from "date-fns";
+import Button from "../Button";
 
 type Props = {
   data: ClassType;

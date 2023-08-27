@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 
 import "../globals.css";
 import Sidebar from "@/components/Sidebar";
-import Modal from "@/components/ProfileModal";
+import Modal from "@/components/modals/ProfileModal";
 
 export const metadata: Metadata = {
   title: "Darasa | Dahsboard",

@@ -3,17 +3,17 @@
 import Cancel from "@/assets/cancel.svg";
 import { getUserFirstLetter } from "@/lib/utils";
 import Image from "next/image";
-import InputField from "./form/InputField";
+import InputField from "../form/InputField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CurrentUser, Major } from "@/lib/types";
 import { Database } from "@/lib/schema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import TextAreaField from "./form/TextAreaField";
-import Button from "./Button";
+import TextAreaField from "../form/TextAreaField";
+import Button from "../Button";
 import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import Avatar from "./Avatar";
+import ImageUploader from "../ImageUploader";
 
 type Props = {
   user: CurrentUser;
@@ -60,23 +60,23 @@ export default function ProfileModal({ user }: Props) {
     },
   });
 
-  const getMajors = async () => {
-    const res = await supabase.from("major").select("*").eq("id", major_id);
-    const majors = res.data as Major[] | null;
-
-    if (majors) {
-      const options = majors.map(({ id, name }) => ({
-        value: id,
-        label: name,
-      }));
-
-      setMajors(options);
-    }
-  };
-
   useEffect(() => {
+    const getMajors = async () => {
+      const res = await supabase.from("major").select("*").eq("id", major_id);
+      const majors = res.data as Major[] | null;
+
+      if (majors) {
+        const options = majors.map(({ id, name }) => ({
+          value: id,
+          label: name,
+        }));
+
+        setMajors(options);
+      }
+    };
+
     getMajors();
-  }, []);
+  }, [major_id, supabase]);
 
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
     try {
@@ -128,7 +128,7 @@ export default function ProfileModal({ user }: Props) {
 
         <section className="flex mt-20 justify-center w-full">
           <div className="justify-center flex">
-            <Avatar
+            <ImageUploader
               uid={"user.id"}
               url={avatar}
               onUpload={(url) => {

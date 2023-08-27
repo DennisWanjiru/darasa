@@ -2,7 +2,7 @@ import Image from "next/image";
 import UpDown from "@/assets/up-down.svg";
 import { getUserFirstLetter } from "@/lib/utils";
 import ViewProfileLink from "./ViewProfileLink";
-import ProfileModal from "./ProfileModal";
+import ProfileModal from "./modals/ProfileModal";
 import { CurrentUser } from "@/lib/types";
 
 type Props = {

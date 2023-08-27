@@ -3,7 +3,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Button from "./Button";
-import ClassInfoModal from "./ClassInfoModal";
+import ClassInfoModal from "./modals/ClassInfoModal";
 import Link from "next/link";
 import { enrollToClass, getCurrentUser } from "@/lib/actions";
 

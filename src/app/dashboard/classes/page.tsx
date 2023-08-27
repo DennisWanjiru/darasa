@@ -1,7 +1,7 @@
 import AddClassLink from "@/components/AddClassLink";
 import Button from "@/components/Button";
-import InstructorClassesTable from "@/components/InstructorClassesTable";
-import ProfileModal from "@/components/ProfileModal";
+import ProfileModal from "@/components/modals/ProfileModal";
+import InstructorClassesTable from "@/components/tables/InstructorClassesTable";
 import { getCurrentUser } from "@/lib/actions";
 import { getStatus } from "@/lib/utils";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";

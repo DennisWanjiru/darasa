@@ -8,7 +8,7 @@ import { ClassType } from "@/lib/types";
 import Supa from "@/assets/supaman.jpeg";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { format } from "date-fns";
-import Button from "./Button";
+import Button from "../Button";
 
 type Data = ClassType & {
   category: { name: string };

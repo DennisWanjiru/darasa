@@ -1,4 +1,5 @@
-import ClassDetailsTableRow from "@/components/ClassDetailsTableRow";
+import ClassDetailsTableRow from "@/components/tables/ClassDetailsTableRow";
+import AddGradeModal from "@/components/modals/AddGradeModal";
 import { Enrollment } from "@/lib/types";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";

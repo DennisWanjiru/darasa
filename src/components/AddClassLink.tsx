@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Add from "@/assets/add.svg";
 import { cn } from "@/lib/utils";
-import ProfileModal from "./ProfileModal";
+import ProfileModal from "./modals/ProfileModal";
 import { Category, CurrentUser } from "@/lib/types";
-import CreateClassModal from "./CreateClassModal";
+import CreateClassModal from "./modals/CreateClassModal";
 import { useState } from "react";
 
 type Props = {
