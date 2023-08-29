@@ -10,6 +10,7 @@ import { cookies } from "next/headers";
 import Image from "next/image";
 import { differenceInDays, format } from "date-fns";
 import Button from "../Button";
+import Avatar from "../Avatar";
 
 type Props = {
   data: ClassType;
@@ -34,23 +35,7 @@ export default async function ClassRow({ data }: Props) {
       <td className="text-blue-500">{name}</td>
       <td>
         <div className="flex items-center space-x-3">
-          <div className="avatar">
-            <div className="mask mask-circle w-12 h-12 bg-green-800">
-              {instructor.avatar_url ? (
-                <Image
-                  src={createAvatarUrl(instructor.avatar_url)}
-                  alt="cover"
-                  height={48}
-                  width={48}
-                  className="object-cover h-full"
-                />
-              ) : (
-                <div className=" flex items-center justify-center text-2xl h-12 w-12 text-white">
-                  {getUserFirstLetter(instructor.name)}
-                </div>
-              )}
-            </div>
-          </div>
+          <Avatar name={instructor.name} url={instructor.avatar_url} />
           <div>
             <div className="font-semibold text-blue-500">
               {instructor?.prefix}. {instructor?.name}

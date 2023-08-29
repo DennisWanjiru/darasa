@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Button from "../Button";
 import ClassActions from "../ClassActions";
+import Avatar from "../Avatar";
 
 type Props = {
   data: ClassType;
@@ -37,23 +38,7 @@ export default async function InstructorClassRow({ data }: Props) {
           className="flex items-center space-x-3"
           href={`/dashboard/classes/${id}`}
         >
-          <div className="avatar">
-            <div className="mask mask-squircle w-12 h-12 bg-green-800">
-              {thumbnail ? (
-                <Image
-                  src={createAvatarUrl(thumbnail)}
-                  alt="cover"
-                  height={48}
-                  width={48}
-                  className="object-cover h-full"
-                />
-              ) : (
-                <div className=" flex items-center justify-center text-2xl h-12 w-12 text-white">
-                  {getUserFirstLetter(name)}
-                </div>
-              )}
-            </div>
-          </div>
+          <Avatar name={name} url={thumbnail ?? undefined} variant="square" />
           <div>
             <div className="font-semibold text-blue-500">{name}</div>
           </div>

@@ -1,5 +1,6 @@
 import { ClassType } from "@/lib/types";
 import InstructorClassRow from "./InstructorClassRow";
+import ClassRow from "./ClassRow";
 
 type Props = {
   classes: ClassType[];
@@ -22,7 +23,7 @@ export default function StudentClassesTable({ classes }: Props) {
 
         <tbody>
           {classes.map((data) => (
-            <InstructorClassRow key={data.id} data={data} />
+            <ClassRow key={data.id} data={data} />
           ))}
         </tbody>
       </table>

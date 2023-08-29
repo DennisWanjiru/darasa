@@ -4,9 +4,10 @@ import { getUserFirstLetter } from "@/lib/utils";
 import ViewProfileLink from "./ViewProfileLink";
 import ProfileModal from "./modals/ProfileModal";
 import { CurrentUser } from "@/lib/types";
+import Avatar from "./Avatar";
 
 type Props = {
-  user?: CurrentUser;
+  user: CurrentUser;
 };
 
 export default function SidebarFooter({ user }: Props) {
@@ -16,25 +17,17 @@ export default function SidebarFooter({ user }: Props) {
         tabIndex={0}
         className="px-6 flex items-center justify-between cursor-pointer"
       >
-        {user?.avatar_url ? (
-          <Image
-            src={`${process.env.NEXT_PUBLIC_STORAGE_BUCKET_URL}/avatars/${user.avatar_url}`}
-            alt={user.name}
-            width={48}
-            height={48}
-            className="h-12 w-12 rounded-xl"
-          />
-        ) : (
-          <div className=" flex items-center justify-center text-2xl w-12 text-white rounded-xl bg-green-800">
-            {getUserFirstLetter(user?.name ?? "U")}
-          </div>
-        )}
+        <Avatar
+          variant="square"
+          name={user.name}
+          url={user.avatar_url ?? undefined}
+        />
 
         <div className="flex flex-col">
           <p>
-            {user?.prefix ? `${user?.prefix}.` : ""} {user?.name}
+            {user.prefix ? `${user.prefix}.` : ""} {user?.name}
           </p>
-          <p>{user?.role === "student" ? "Student" : "Instuctor"} Account</p>
+          <p>{user.role === "student" ? "Student" : "Instuctor"} Account</p>
         </div>
         <Image src={UpDown} alt="more" />
       </label>

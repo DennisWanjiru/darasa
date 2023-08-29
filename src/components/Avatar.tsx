@@ -12,8 +12,8 @@ type Props = {
 };
 
 export default function Avatar({ url, name, variant, size }: Props) {
-  const getSize = (_size?: Size) => {
-    switch (_size) {
+  const getSize = () => {
+    switch (size) {
       case "sm":
         return "h-12 w-12";
       case "md":
@@ -26,18 +26,22 @@ export default function Avatar({ url, name, variant, size }: Props) {
     }
   };
 
+  const getVariant = () => {
+    switch (variant) {
+      case "circle":
+        return "rounded-full";
+
+      case "square":
+        return !size || size === "sm" ? "rounded-xl" : "rounded-3xl";
+
+      default:
+        return "rounded-full";
+    }
+  };
+
   return (
     <div className="avatar">
-      <div
-        className={cn(
-          "mask mask-circle w-12 h-12 bg-green-800",
-          getSize(size),
-          {
-            "mask-square rounded-3xl": variant === "square",
-            "mask-circle": variant === "circle",
-          }
-        )}
-      >
+      <div className={cn("w-12 h-12 bg-green-800", getSize(), getVariant())}>
         {url ? (
           <Image
             src={createAvatarUrl(url)}
@@ -50,7 +54,7 @@ export default function Avatar({ url, name, variant, size }: Props) {
           <div
             className={cn(
               "flex items-center justify-center text-2xl h-12 w-12 text-white",
-              getSize(size)
+              getSize()
             )}
           >
             {getUserFirstLetter(name)}
