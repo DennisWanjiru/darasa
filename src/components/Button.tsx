@@ -5,16 +5,19 @@ import Image from "next/image";
 interface ButtonProps extends React.ComponentProps<"button"> {
   title: string;
   icon?: boolean;
+  onClick?: () => void;
 }
 
 export default function Button({
   title,
   icon,
   className,
+  onClick,
   ...props
 }: ButtonProps) {
   return (
     <button
+      onClick={onClick}
       className={cn(
         "flex items-center justify-center bg-primary text-white h-12 px-2.5 rounded-[10px] w-full",
         className

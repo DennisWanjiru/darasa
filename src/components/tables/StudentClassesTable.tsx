@@ -11,7 +11,7 @@ export default function StudentClassesTable({ classes }: Props) {
     <div className="overflow-x-auto overflow-y-scroll mt-7 max-h-[650px]">
       <table className="table">
         <thead>
-          <tr className="text-primary invert-[.1] border-0">
+          <tr className="text-primary invert-[.1] border-0 text-sm">
             <th>Class Code</th>
             <th>Class Name</th>
             <th>Instuctor</th>

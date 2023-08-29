@@ -1,29 +1,70 @@
+"use client";
+
 import { getCurrentUser } from "@/lib/actions";
 import ClassCard from "@/components/ClassCard";
-import { ClassType } from "@/lib/types";
+import { ClassType, CurrentUser } from "@/lib/types";
 import { createAvatarUrl } from "@/lib/utils";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Supa from "@/assets/supaman.jpeg";
 import Link from "next/link";
+import ClassInfoModal from "@/components/modals/ClassInfoModal";
+import { useEffect, useState } from "react";
+import Loader from "@/components/Loader";
 
-export default async function Index() {
-  const supabase = createServerComponentClient({ cookies });
-  const currentUser = await getCurrentUser();
+type Category = {
+  name: string;
+  class: ClassType[];
+};
 
-  const { data } = await supabase.from("category").select(`name, class(*)`);
+export default function Index() {
+  const supabase = createClientComponentClient();
+  const [currentUser, setCurrentUser] = useState<CurrentUser>();
+  const [categories, setCategories] = useState<Category[] | null>(null);
+  const [currentUserClasses, setCurrentUserClasses] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [selected, setSelected] = useState<string | null>(null);
 
-  const categories = data as { name: string; class: ClassType[] }[] | null;
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data } = await supabase.from("category").select(`name, class(*)`);
+      const categories = data as { name: string; class: ClassType[] }[] | null;
+      setCategories(categories);
+    };
 
-  const { data: enrollments } = await supabase
-    .from("enrollment")
-    .select(`id, class(id)`)
-    .eq("student_id", currentUser?.id ?? "");
+    const fetchEnrollments = async () => {
+      const { data: enrollments } = await supabase
+        .from("enrollment")
+        .select(`id, class(id)`)
+        .eq("student_id", currentUser?.id ?? "");
 
-  const currentUserClasses = enrollments
-    ? // @ts-ignore
-      (enrollments.map((enrollment) => enrollment.class?.id) as string[])
-    : [];
+      const currentUserClasses = enrollments
+        ? // @ts-ignore
+          (enrollments.map((enrollment) => enrollment.class?.id) as string[])
+        : [];
+
+      setCurrentUserClasses(currentUserClasses);
+    };
+
+    const fetchCurrentUser = async () => {
+      const currentUser = await getCurrentUser();
+      setCurrentUser(currentUser);
+    };
+
+    Promise.all([fetchCurrentUser(), fetchCategories(), fetchEnrollments()])
+      .catch(() => setError("Something went wrong"))
+      .finally(() => setIsLoading(false));
+  }, [supabase, currentUser?.id]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center">{error}</div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -52,6 +93,7 @@ export default async function Index() {
                               key={data.id}
                               code={data.code}
                               name={name}
+                              showInfo={(id) => setSelected(id)}
                               type={
                                 !currentUserClasses.includes(data.id)
                                   ? "enroll"
@@ -73,6 +115,14 @@ export default async function Index() {
             </>
           ))
         : null}
+
+      {selected ? (
+        <ClassInfoModal
+          selected={selected}
+          onClose={() => setSelected(null)}
+          enroll={!currentUserClasses.includes(selected)}
+        />
+      ) : null}
     </div>
   );
 }

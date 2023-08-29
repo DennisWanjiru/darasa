@@ -65,7 +65,7 @@ export default function Index({ params }: Props) {
           <div className="overflow-x-auto overflow-y-scroll mt-7 max-h-[650px]">
             <table className="table">
               <thead>
-                <tr className="text-primary invert-[.1] border-0 text-base">
+                <tr className="text-primary invert-[.1] border-0 text-sm">
                   <th>Total Marks</th>
                   <th>Student Name</th>
                   <th>Student Email</th>

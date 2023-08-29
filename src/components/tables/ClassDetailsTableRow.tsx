@@ -57,7 +57,7 @@ export default function ClassDetailsTableRow({ data, onSelectRow }: Props) {
     getStudent();
     getGrade();
     getMajor();
-  }, [supabase, data, student]);
+  }, [supabase, data, student?.major_id]);
 
   const gradeData: GradeData = {
     id: grade?.id,

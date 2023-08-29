@@ -1,11 +1,18 @@
+"use client";
+
 import { cn } from "@/lib/utils";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  createClientComponentClient,
+  createServerComponentClient,
+} from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Button from "./Button";
 import ClassInfoModal from "./modals/ClassInfoModal";
 import Link from "next/link";
 import { enrollToClass, getCurrentUser } from "@/lib/actions";
+import { useEffect, useState } from "react";
+import { CurrentUser, Profile } from "@/lib/types";
 
 type Props = {
   id: string;
@@ -15,32 +22,50 @@ type Props = {
   type?: "enroll" | "normal";
   instructorId: string;
   className?: string;
+  showInfo?: (id: string) => void;
 };
 
-export default async function ClassCard({
+export default function ClassCard({
   thumbnail,
   name,
   code,
   type,
   id,
+  showInfo,
   className,
   instructorId,
 }: Props) {
-  const supabase = createServerComponentClient({ cookies });
-  const { data: instructors } = await supabase
-    .from("profile")
-    .select()
-    .eq("id", instructorId);
-  const currentUser = await getCurrentUser();
+  const [instructor, setInstructor] = useState<Profile | null>(null);
+  const supabase = createClientComponentClient();
+  const [currentUser, setCurrentUser] = useState<CurrentUser>();
 
-  const instructor = instructors ? instructors[0] : null;
+  useEffect(() => {
+    const fetchInstructors = async () => {
+      const { data: instructors } = await supabase
+        .from("profile")
+        .select()
+        .eq("id", instructorId);
+
+      const instructor: Profile | null = instructors ? instructors[0] : null;
+      setInstructor(instructor);
+    };
+
+    const fetchCurrentUser = async () => {
+      const user = await getCurrentUser();
+      setCurrentUser(user);
+    };
+
+    fetchCurrentUser();
+    fetchInstructors();
+  }, [supabase, instructorId]);
 
   return (
-    <div
+    <button
       className={cn(
         "card card-side shadow-md bg-secondary h-40 w-1/3 max-w-sm",
         className
       )}
+      onClick={() => showInfo && showInfo(id)}
     >
       <figure className="w-1/3">
         <Image
@@ -56,7 +81,7 @@ export default async function ClassCard({
           "py-4": type === "enroll",
         })}
       >
-        <h4 className="invert-[.3]">{code}</h4>
+        <h4 className="invert-[.3] text-left">{code}</h4>
         <h3 className="card-title truncate invert-[.2]">{name}</h3>
 
         {instructor ? (
@@ -79,6 +104,6 @@ export default async function ClassCard({
           </form>
         ) : null}
       </div>
-    </div>
+    </button>
   );
 }

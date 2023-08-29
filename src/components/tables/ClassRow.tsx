@@ -1,5 +1,6 @@
-import { ClassType } from "@/lib/types";
+import { ClassType, Grade } from "@/lib/types";
 import {
+  calculateGrade,
   cn,
   createAvatarUrl,
   getStatus,
@@ -11,6 +12,7 @@ import Image from "next/image";
 import { differenceInDays, format } from "date-fns";
 import Button from "../Button";
 import Avatar from "../Avatar";
+import { getCurrentUser } from "@/lib/actions";
 
 type Props = {
   data: ClassType;
@@ -18,15 +20,22 @@ type Props = {
 
 export default async function ClassRow({ data }: Props) {
   const supabase = createServerComponentClient({ cookies });
-  const { instructor_id, code, name, start_date, end_date } = data;
+  const { id, instructor_id, code, name, start_date, end_date } = data;
+  const currentUser = await getCurrentUser();
 
   const { data: instructors } = await supabase
     .from("profile")
     .select()
     .eq("id", instructor_id);
 
-  const instructor = instructors ? instructors[0] : null;
+  const { data: grades } = await supabase
+    .from("grade")
+    .select()
+    .eq("student_id", currentUser?.id ?? "")
+    .eq("class_id", id);
 
+  const grade: Grade | null = grades ? grades[0] : null;
+  const instructor = instructors ? instructors[0] : null;
   const status = getStatus(start_date, end_date);
 
   return (
@@ -44,8 +53,11 @@ export default async function ClassRow({ data }: Props) {
         </div>
       </td>
 
-      <td className="invert-[.3]">-</td>
-      <td className="invert-[.3]">-</td>
+      <td className="invert-[.3]">
+        {grade ? calculateGrade(grade.grade) : "-"}
+      </td>
+      <td className="invert-[.3]">{grade?.grade ? `${grade?.grade}%` : "-"}</td>
+
       <td className="w-28">
         <Button
           title={status}
