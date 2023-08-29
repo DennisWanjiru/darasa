@@ -1,55 +1,78 @@
-import { Enrollment, Grade, GradeData } from "@/lib/types";
+"use client";
+
+import { Enrollment, Grade, GradeData, Profile } from "@/lib/types";
 import {
   calculateGrade,
   createAvatarUrl,
   getUserFirstLetter,
 } from "@/lib/utils";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
-import AddGradeButton from "../AddGradeButton";
+import Edit from "@/assets/edit.svg";
+import { useEffect, useState } from "react";
 
 type Props = {
   data: Enrollment;
+  onSelectRow: (data: GradeData) => void;
 };
 
-export default async function ClassDetailsTableRow({ data }: Props) {
-  const supabase = createServerComponentClient({ cookies });
-  const { data: students } = await supabase
-    .from("profile")
-    .select("name, avatar_url, email, major_id")
-    .eq("id", data.student_id);
+export default function ClassDetailsTableRow({ data, onSelectRow }: Props) {
+  const supabase = createClientComponentClient();
+  const [student, setStudent] = useState<Partial<Profile> | null>(null);
+  const [grade, setGrade] = useState<any>(null);
+  const [major, setMajor] = useState<any>(null);
 
-  const { data: grades } = await supabase
-    .from("grade")
-    .select()
-    .eq("student_id", data.student_id)
-    .eq("class_id", data.class_id);
+  useEffect(() => {
+    const getStudent = async () => {
+      const { data: students } = await supabase
+        .from("profile")
+        .select("name, avatar_url, email, major_id")
+        .eq("id", data.student_id);
 
-  const grade: Grade | null = grades ? grades[0] : null;
-  const student = students ? students[0] : null;
+      const student = students ? students[0] : null;
+      setStudent(student);
+    };
 
-  const { data: majors } = await supabase
-    .from("major")
-    .select()
-    .eq("id", student?.major_id ?? "");
+    const getGrade = async () => {
+      const { data: grades } = await supabase
+        .from("grade")
+        .select()
+        .eq("student_id", data.student_id)
+        .eq("class_id", data.class_id);
 
-  const major = majors ? majors[0].name : "";
+      const grade: Grade | null = grades ? grades[0] : null;
+      setGrade(grade);
+    };
+
+    const getMajor = async () => {
+      const { data: majors } = await supabase
+        .from("major")
+        .select()
+        .eq("id", student?.major_id ?? "");
+
+      const major = majors ? majors[0].name : "";
+      setMajor(major);
+    };
+
+    getStudent();
+    getGrade();
+    getMajor();
+  }, [supabase, data, student]);
 
   const gradeData: GradeData = {
     id: grade?.id,
     student_id: data.student_id,
     class_id: data.class_id,
-    email: student?.email,
-    name: student?.name,
+    email: student?.email ?? "",
+    name: student?.name ?? "",
     major,
     grade: grade ? grade.grade : undefined,
-    avatar_url: student?.avatar_url,
+    avatar_url: student?.avatar_url ?? "",
   };
 
   return (
     <tr className="border-0 text-gray-800">
-      <td>{grade?.grade}%</td>
+      <td>{grade?.grade ? `${grade?.grade}%` : "-"}</td>
       <td className="text-blue-500">
         <div className="flex items-center space-x-3">
           <div className="avatar">
@@ -74,9 +97,18 @@ export default async function ClassDetailsTableRow({ data }: Props) {
           </div>
         </div>
       </td>
-      {student ? <td>{student.email}</td> : null}
-      {grade ? <td>{calculateGrade(grade.grade)}</td> : null}
-      <td>{student ? <AddGradeButton gradeData={gradeData} /> : null}</td>
+      <td>{student?.email}</td>
+      <td>{grade ? calculateGrade(grade.grade) : "-"}</td>
+      <td>
+        {student ? (
+          <Image
+            src={Edit}
+            alt="edit"
+            onClick={() => onSelectRow(gradeData)}
+            className="cursor-pointer"
+          />
+        ) : null}
+      </td>
     </tr>
   );
 }
