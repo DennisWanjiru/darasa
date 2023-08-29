@@ -8,10 +8,9 @@ import {
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import Edit from "@/assets/edit.svg";
-import Delete from "@/assets/delete.svg";
 import Link from "next/link";
 import Button from "../Button";
+import ClassActions from "../ClassActions";
 
 type Props = {
   data: ClassType;
@@ -19,7 +18,8 @@ type Props = {
 
 export default async function InstructorClassRow({ data }: Props) {
   const supabase = createServerComponentClient({ cookies });
-  const { id, code, name, start_date, end_date, thumbnail } = data;
+  const { id, code, name, start_date, end_date, thumbnail, instructor_id } =
+    data;
 
   const { data: count } = await supabase
     .from("enrollment")
@@ -73,10 +73,7 @@ export default async function InstructorClassRow({ data }: Props) {
         />
       </td>
       <td className="w-28">
-        <div className="flex space-x-1.5 items-center">
-          <Image src={Edit} alt="edit" />
-          <Image height={30} width={30} src={Delete} alt="delete" />
-        </div>
+        <ClassActions id={id} instructor_id={instructor_id} />
       </td>
     </tr>
   );

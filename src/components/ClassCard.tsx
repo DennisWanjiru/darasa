@@ -72,6 +72,7 @@ export default async function ClassCard({
           <form action={enrollToClass} className="w-20">
             <input value={id} name="class_id" className="hidden" />
             <Button
+              type="submit"
               title="Enroll"
               className="h-7 bg-primary text-xs rounded-md"
             />

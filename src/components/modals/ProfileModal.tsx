@@ -119,6 +119,8 @@ export default function ProfileModal({ user }: Props) {
         <div className="flex items-center">
           <button
             type="button"
+            // @ts-ignore
+            onClick={() => window.profile.close()}
             className="btn bg-transparent hover:bg-transparent border-none"
           >
             <Image src={Cancel} alt="Close" />
