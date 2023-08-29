@@ -30,11 +30,13 @@ export default async function InstructorClassRow({ data }: Props) {
   const status = getStatus(start_date, end_date);
 
   return (
-    // <Link key={data.id} className="w-full" href={`/dashboard/classes/${id}`}>
     <tr className="border-0">
       <td className="invert-[.3]">{code}</td>
       <td className="text-blue-500">
-        <div className="flex items-center space-x-3">
+        <Link
+          className="flex items-center space-x-3"
+          href={`/dashboard/classes/${id}`}
+        >
           <div className="avatar">
             <div className="mask mask-squircle w-12 h-12 bg-green-800">
               {thumbnail ? (
@@ -55,7 +57,7 @@ export default async function InstructorClassRow({ data }: Props) {
           <div>
             <div className="font-semibold text-blue-500">{name}</div>
           </div>
-        </div>
+        </Link>
       </td>
 
       <td className="invert-[.3]">{start_date}</td>
@@ -77,6 +79,5 @@ export default async function InstructorClassRow({ data }: Props) {
         </div>
       </td>
     </tr>
-    // </Link>
   );
 }

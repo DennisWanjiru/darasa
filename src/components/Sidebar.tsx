@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+"use client";
 
 import Logo from "./Logo";
 import NavLink from "./NavLink";
@@ -7,12 +7,22 @@ import Explore from "@/assets/explore.svg";
 import Pile from "@/assets/pile.svg";
 import SidebarFooter from "./SidebarFooter";
 import { getCurrentUser } from "@/lib/actions";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { CurrentUser } from "@/lib/types";
 
-export default async function Sidebar() {
-  const headersList = headers();
-  const pathname = headersList.get("x-invoke-path") || "";
+export default function Sidebar() {
+  const pathname = usePathname();
+  const [user, setUser] = useState<CurrentUser | undefined>();
 
-  const user = await getCurrentUser();
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getCurrentUser();
+      setUser(user);
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <aside className="w-80 pt-12 h-scren ">
@@ -31,7 +41,7 @@ export default async function Sidebar() {
             <NavLink
               title="Classes"
               to="/dashboard/classes"
-              active={pathname === "/dashboard/classes"}
+              active={pathname.includes("/dashboard/classes")}
               Icon={Pile}
             />
           ) : (
@@ -43,7 +53,7 @@ export default async function Sidebar() {
             />
           )}
         </ul>
-        <SidebarFooter user={user} />
+        {user ? <SidebarFooter user={user} /> : null}
       </nav>
     </aside>
   );

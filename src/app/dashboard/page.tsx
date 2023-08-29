@@ -4,13 +4,13 @@ import Briefcase from "@/assets/briefcase.svg";
 import OverviewCard from "@/components/OverviewCard";
 import Supa from "@/assets/supaman.jpeg";
 import ClassCard from "@/components/ClassCard";
-import StudentClassesTable from "@/components/StudentClassesTable";
+import StudentClassesTable from "@/components/tables/StudentClassesTable";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { ClassType } from "@/lib/types";
 import { createAvatarUrl } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/actions";
-import InstructorClassesTable from "@/components/InstructorClassesTable";
+import InstructorClassesTable from "@/components/tables/InstructorClassesTable";
 
 export default async function Home() {
   const supabase = createServerComponentClient({ cookies });
