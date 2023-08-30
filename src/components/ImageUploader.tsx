@@ -18,7 +18,7 @@ export default function ImageUploader({
   onUpload: (url: string) => void;
 }) {
   const supabase = createClientComponentClient<Database>();
-  const [avatarUrl, setAvatarUrl] = useState<Profile["avatar_url"]>(url);
+  const [avatarUrl, setAvatarUrl] = useState<Profile["avatar_url"]>(null);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {

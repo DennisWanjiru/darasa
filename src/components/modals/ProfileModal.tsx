@@ -1,7 +1,7 @@
 "use client";
 
 import Cancel from "@/assets/cancel.svg";
-import { getUserFirstLetter } from "@/lib/utils";
+import { notify } from "@/lib/utils";
 import Image from "next/image";
 import InputField from "../form/InputField";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -15,9 +15,12 @@ import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ImageUploader from "../ImageUploader";
 import { prefixes } from "@/lib/contants";
+import { useRouter } from "next/navigation";
+import { getCurrentUser } from "@/lib/actions";
 
 type Props = {
   user: CurrentUser;
+  onClose: () => void;
 };
 
 type Options = {
@@ -39,11 +42,12 @@ const schema = z.object({
   bio: z.string().optional(),
 });
 
-export default function ProfileModal({ user }: Props) {
+export default function ProfileModal({ user, onClose }: Props) {
   const { id, avatar_url, email, name, major_id, bio, prefix } = user;
   const supabase = createClientComponentClient();
   const [majors, setMajors] = useState<Options>();
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(avatar_url);
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -56,9 +60,9 @@ export default function ProfileModal({ user }: Props) {
       email,
       name,
       bio,
-      major_id,
+      major_id: major_id ?? "",
       prefix,
-      avatar_url,
+      avatar_url: avatar_url ?? "",
     },
   });
 
@@ -81,40 +85,42 @@ export default function ProfileModal({ user }: Props) {
   }, [major_id, supabase]);
 
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
-    try {
-      const { data: user, error } = await supabase
+    const user = await getCurrentUser();
+
+    if (user) {
+      console.log({ formData });
+      const { data, error } = await supabase
         .from("profile")
-        .update(formData)
+        .update(
+          user.role === "student"
+            ? { ...formData, prefix: null }
+            : { ...formData, major_id: null }
+        )
         .eq("id", id)
         .select();
 
-      if (error) {
-        throw error;
-      } else {
-        console.log({ user });
-        // TODO: Close modal and refetch data
-      }
-    } catch (error) {
-      console.log({ error });
+      router.refresh();
+      // @ts-ignore
+      window.profile.close();
+      onClose();
+      notify("Profile has been updated!");
     }
   };
-
-  const avatar = user?.avatar_url
-    ? `${process.env.NEXT_PUBLIC_STORAGE_BUCKET_URL}/avatars/${user.avatar_url}`
-    : null;
 
   return (
     <dialog id="profile" className="modal justify-end align-bottom">
       <form
-        method="dialog"
         onSubmit={handleSubmit(onSubmit)}
         className="modal-box h-screen max-h-[calc(100vh)] border-b-raius rounded-e-none rounded-es-none rounded-tr-xl rounded-tl-xl bg-secondary text-primary w-[369px] mr-3 mt-4"
       >
         <div className="flex items-center">
           <button
             type="button"
-            // @ts-ignore
-            onClick={() => window.profile.close()}
+            onClick={() => {
+              // @ts-ignore
+              window.profile.close();
+              onClose();
+            }}
             className="btn bg-transparent hover:bg-transparent border-none"
           >
             <Image src={Cancel} alt="Close" />
@@ -125,8 +131,8 @@ export default function ProfileModal({ user }: Props) {
         <section className="flex mt-20 justify-center w-full">
           <div className="justify-center flex">
             <ImageUploader
-              uid={"user.id"}
-              url={avatar}
+              uid={id}
+              url={avatarUrl}
               onUpload={(url) => {
                 console.log({ url });
                 setAvatarUrl(url);
@@ -183,11 +189,11 @@ export default function ProfileModal({ user }: Props) {
           />
 
           <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="mt-14"
             icon
-            title={isSubmitting ? "Updating Profile..." : "Update Profile"}
+            type="submit"
+            isSubmitting={isSubmitting}
+            className="mt-14"
+            title="Update Profile"
           />
         </section>
       </form>

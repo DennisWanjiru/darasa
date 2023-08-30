@@ -5,6 +5,7 @@ import ViewProfileLink from "./ViewProfileLink";
 import ProfileModal from "./modals/ProfileModal";
 import { CurrentUser } from "@/lib/types";
 import Avatar from "./Avatar";
+import { useState } from "react";
 
 type Props = {
   user: CurrentUser;
@@ -36,15 +37,13 @@ export default function SidebarFooter({ user }: Props) {
         tabIndex={0}
         className="dropdown-content z-[1] menu p-2 bg-secondary rounded-box w-52 text-primary shadow-md mb-5 m-7"
       >
-        <ViewProfileLink />
+        <ViewProfileLink user={user} />
         <form action="" method="post">
           <li>
             <button formAction="/auth/signout">Signout</button>
           </li>
         </form>
       </ul>
-
-      {user ? <ProfileModal user={user} /> : null}
     </footer>
   );
 }

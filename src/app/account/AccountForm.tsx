@@ -65,7 +65,6 @@ const AccountForm = ({ majors, roles, session }: Props) => {
 
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
     try {
-      console.log({ formData });
       const { data: user, error } = await supabase
         .from("profile")
         .insert(

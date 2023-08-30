@@ -53,6 +53,14 @@ export default async function Index() {
         ) : null}
       </div>
 
+      {!currentClasses.length &&
+      !futureClasses.length &&
+      !completedClasses.length ? (
+        <div className="flex h-screen items-center -mt-28 justify-center">
+          No Classes
+        </div>
+      ) : null}
+
       {currentClasses.length ? (
         <section className="mt-10 p-7 bg-secondary rounded-2xl shadow-md">
           <h3 className="font-semibold text-lg">Current Classes</h3>

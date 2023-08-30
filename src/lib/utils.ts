@@ -3,6 +3,7 @@ import { ClassValue } from "clsx";
 import { differenceInDays } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { GPATableEntry, GradeBoundary } from "./types";
+import { toast } from "react-toastify";
 
 export const cn = (...values: ClassValue[]) => {
   return twMerge(clsx(values));
@@ -105,3 +106,19 @@ export function calculateGPA(averageScore: number): string {
 
   return "0.0";
 }
+
+export const notify = (
+  message: string,
+  type: "success" | "error" = "success"
+) => {
+  return toast[type](message, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  });
+};

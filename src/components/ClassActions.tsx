@@ -4,6 +4,8 @@ import Image from "next/image";
 import Edit from "@/assets/edit.svg";
 import Delete from "@/assets/delete.svg";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { notify } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function ClassActions({
   id,
@@ -13,6 +15,7 @@ export default function ClassActions({
   instructor_id: string;
 }) {
   const supabase = createClientComponentClient();
+  const router = useRouter();
 
   const handleDeleteClass = async () => {
     try {
@@ -25,7 +28,8 @@ export default function ClassActions({
       if (error) {
         throw error;
       }
-      //TODO: show success message
+      notify("Classes has been deleted!");
+      router.refresh();
     } catch (error) {
       console.log({ error });
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, notify } from "@/lib/utils";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import Cancel from "@/assets/cancel.svg";
@@ -16,6 +16,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Category, CurrentUser } from "@/lib/types";
 
 import DatePickerField from "../form/DatePickerField";
+import { useRouter } from "next/navigation";
 
 type FormData = Database["public"]["Tables"]["class"]["Row"];
 type Props = {
@@ -49,12 +50,14 @@ export default function CreateClassModal({
   currentUser,
 }: Props) {
   const supabase = createClientComponentClient();
+  const router = useRouter();
 
   const {
     handleSubmit,
     register,
     setValue,
     control,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -78,7 +81,6 @@ export default function CreateClassModal({
 
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
     try {
-      console.log({ formData });
       const { data: classData, error } = await supabase
         .from("class")
         .insert({
@@ -89,10 +91,10 @@ export default function CreateClassModal({
         throw error;
         // TODO: Unique code error
       } else {
+        reset();
         closeModal();
-        // @ts-ignore
-        window.add_class.close();
-        // TODO: Show success alert
+        router.refresh();
+        notify("The class was created!");
       }
     } catch (error) {
       console.log({ error });
@@ -188,8 +190,8 @@ export default function CreateClassModal({
         <Button
           icon
           type="submit"
-          disabled={isSubmitting}
-          title={isSubmitting ? "Saving Class..." : "Save Class"}
+          isSubmitting={isSubmitting}
+          title="Save Class"
         />
       </form>
     </dialog>

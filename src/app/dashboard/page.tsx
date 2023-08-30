@@ -53,7 +53,7 @@ export default async function Home() {
 
   const mostEnrolled = {
     count: 0,
-    code: "",
+    code: undefined,
   };
 
   const counts = instructorClasses?.map(async ({ id, code }) => {
@@ -129,7 +129,11 @@ export default async function Home() {
           Icon={Plus}
         />
         <OverviewCard
-          title={role === "instructor" ? mostEnrolled.code : overallScore.gpa}
+          title={
+            role === "instructor"
+              ? mostEnrolled?.code ?? "N/A"
+              : overallScore.gpa
+          }
           subTitle={role === "instructor" ? "Most Enrolled" : "GPA"}
           Icon={Briefcase}
         />

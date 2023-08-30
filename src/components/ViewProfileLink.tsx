@@ -1,10 +1,28 @@
 "use client";
 
-export default function ViewProfileLink() {
+import { CurrentUser } from "@/lib/types";
+import ProfileModal from "./modals/ProfileModal";
+import { useState } from "react";
+
+export default function ViewProfileLink({ user }: { user: CurrentUser }) {
+  const [openModal, setOpenModal] = useState(false);
+
   return (
-    // @ts-ignore
-    <li onClick={() => window.profile.showModal()}>
-      <a>View Profile</a>
-    </li>
+    <>
+      <li
+        onClick={() => {
+          setOpenModal(true);
+          if (openModal) {
+            // @ts-ignore
+            window.profile.showModal();
+          }
+        }}
+      >
+        <a>View Profile</a>
+      </li>
+      {user && openModal ? (
+        <ProfileModal user={user} onClose={() => setOpenModal(false)} />
+      ) : null}
+    </>
   );
 }

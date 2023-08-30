@@ -41,7 +41,11 @@ export default function Avatar({ url, name, variant, size }: Props) {
 
   return (
     <div className="avatar">
-      <div className={cn("w-12 h-12 bg-green-800", getSize(), getVariant())}>
+      <div
+        className={cn("w-12 h-12", getSize(), getVariant(), {
+          "bg-green-800": !url,
+        })}
+      >
         {url ? (
           <Image
             src={createAvatarUrl(url)}
