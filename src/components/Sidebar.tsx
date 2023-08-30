@@ -26,7 +26,7 @@ export default function Sidebar() {
 
   return (
     <aside className="w-80 pt-12 h-scren ">
-      <Logo theme="dark" className="px-6" />
+      <Logo theme="dark" />
 
       <nav className="mt-20 flex flex-grow col-span-full flex-col justify-between h-[calc(100%-140px)]">
         <ul>
