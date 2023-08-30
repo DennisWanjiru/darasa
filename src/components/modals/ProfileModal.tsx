@@ -14,6 +14,7 @@ import Button from "../Button";
 import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ImageUploader from "../ImageUploader";
+import { prefixes } from "@/lib/contants";
 
 type Props = {
   user: CurrentUser;
@@ -57,6 +58,7 @@ export default function ProfileModal({ user }: Props) {
       bio,
       major_id,
       prefix,
+      avatar_url,
     },
   });
 
@@ -100,14 +102,6 @@ export default function ProfileModal({ user }: Props) {
   const avatar = user?.avatar_url
     ? `${process.env.NEXT_PUBLIC_STORAGE_BUCKET_URL}/avatars/${user.avatar_url}`
     : null;
-
-  const prefixes = [
-    { label: "Prof", value: "Prof" },
-    { label: "Dr", value: "Dr" },
-    { label: "PhD", value: "PhD" },
-    { label: "Mr", value: "Mr" },
-    { label: "Mrs", value: "Mrs" },
-  ];
 
   return (
     <dialog id="profile" className="modal justify-end align-bottom">

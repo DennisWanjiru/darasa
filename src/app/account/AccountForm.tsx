@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,8 @@ import { Database } from "@/lib/schema";
 import { Major, Role } from "@/lib/types";
 import { Session } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import RadioInputField from "@/components/form/RadioInputField";
+import { prefixes } from "@/lib/contants";
 
 type FormData = Database["public"]["Tables"]["profile"]["Row"];
 type Props = {
@@ -28,6 +30,7 @@ const schema = z.object({
     .string()
     .nonempty("Name is required")
     .min(2, "Name should be at least 2 letters"),
+  role_id: z.string().optional(),
   major_id: z.string().optional(),
   email: z.string().email(),
   bio: z.string().optional(),
@@ -36,28 +39,40 @@ const schema = z.object({
 const AccountForm = ({ majors, roles, session }: Props) => {
   const router = useRouter();
   const supabase = createClientComponentClient();
+  const [checkedRole, setCheckedRole] = useState("");
 
   const {
     handleSubmit,
     register,
     setValue,
-    formState: { errors, isSubmitting },
+    getValues,
+    watch,
+    formState: { errors, isSubmitting, isValidating },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       email: session.user.email,
+      role_id: roles[1]?.id ?? "",
     },
   });
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
+  useEffect(() => {
+    const val = getValues("role_id");
+    const role: Role = roles.filter((role) => role.id === val)[0];
+    setCheckedRole(role?.name ?? "");
+  }, [watch("role_id")]);
+
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
     try {
+      console.log({ formData });
       const { data: user, error } = await supabase
         .from("profile")
-        .insert({
-          ...formData,
-          role_id: roles[1]?.id ?? "f4233bf9-f115-4e4d-b8b0-7ecf27ccbdd3",
-        })
+        .insert(
+          checkedRole === "student"
+            ? { ...formData, prefix: null }
+            : { ...formData, major_id: null }
+        )
         .select();
 
       if (error) {
@@ -75,12 +90,17 @@ const AccountForm = ({ majors, roles, session }: Props) => {
     label: name,
   }));
 
+  const roleOptions = roles.map(({ id, name }) => ({
+    value: id,
+    label: name,
+  }));
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col space-y-4 w-full md:w-1/3 mt-10"
     >
-      <div className="justify-center flex">
+      <div className="justify-center flex mb-8">
         <ImageUploader
           uid={"user.id"}
           url={avatarUrl}
@@ -91,18 +111,34 @@ const AccountForm = ({ majors, roles, session }: Props) => {
         />
       </div>
 
-      <InputField
-        label="Prefix"
-        name="prefix"
-        error={errors.prefix?.message}
-        register={register}
-      />
+      <div className="flex space-x-10 items-center">
+        {roles.map(({ id, name }) => (
+          <RadioInputField
+            key={id}
+            name="role_id"
+            label={name}
+            value={id}
+            register={register}
+          />
+        ))}
+      </div>
+
+      {checkedRole === "instructor" ? (
+        <InputField
+          label="Prefix"
+          name="prefix"
+          type="select"
+          options={prefixes}
+          register={register}
+        />
+      ) : null}
 
       <InputField
         label="Name"
         name="name"
         error={errors.name?.message}
         register={register}
+        autoFocus
       />
 
       <InputField
@@ -114,13 +150,15 @@ const AccountForm = ({ majors, roles, session }: Props) => {
         disabled
       />
 
-      <InputField
-        label="Major"
-        name="major_id"
-        type="select"
-        options={options}
-        register={register}
-      />
+      {checkedRole === "student" ? (
+        <InputField
+          label="Major"
+          name="major_id"
+          type="select"
+          options={options}
+          register={register}
+        />
+      ) : null}
 
       <TextAreaField
         label="Bio"
@@ -133,7 +171,8 @@ const AccountForm = ({ majors, roles, session }: Props) => {
       <Button
         type="submit"
         disabled={isSubmitting}
-        title={isSubmitting ? "Creating Profile..." : "Create Profile"}
+        isSubmitting={isSubmitting}
+        title="Create Profile"
       />
     </form>
   );

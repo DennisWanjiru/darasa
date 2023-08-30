@@ -7,6 +7,7 @@ interface ButtonProps extends React.ComponentProps<"button"> {
   icon?: boolean;
   variant?: "inverse" | "primary";
   onClick?: () => void;
+  isSubmitting?: boolean;
 }
 
 export default function Button({
@@ -15,6 +16,7 @@ export default function Button({
   className,
   onClick,
   variant,
+  isSubmitting,
   ...props
 }: ButtonProps) {
   return (
@@ -29,8 +31,16 @@ export default function Button({
         }
       )}
     >
-      {icon ? <Image src={Save} alt="Save Icon" className="mr-2.5" /> : null}
-      {title}
+      {isSubmitting ? (
+        <span className="loading loading-dots loading-sm"></span>
+      ) : (
+        <>
+          {icon ? (
+            <Image src={Save} alt="Save Icon" className="mr-2.5" />
+          ) : null}
+          {title}
+        </>
+      )}
     </button>
   );
 }

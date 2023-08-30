@@ -71,7 +71,12 @@ const InputField: React.FC<InputFieldProps> = ({
           autoFocus={autoFocus}
           disabled={disabled}
           placeholder={placeholder}
-          className="h-12 bg-gray-100 mt-4 rounded-[10px] px-5 outline-0 focus:ring-2 focus:ring-black disabled:text-gray-500 disabled:cursor-not-allowed"
+          className={cn(
+            "h-12 bg-gray-100 mt-4 rounded-[10px] px-5 outline-0 focus:ring-2 focus:ring-black disabled:text-gray-500 disabled:cursor-not-allowed",
+            {
+              "ring-2 ring-red-700 bg-red-100 focus:ring-red-700": !!error,
+            }
+          )}
           {...register(name, { required: `${label} is required` })}
         />
       )}
