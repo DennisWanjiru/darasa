@@ -92,13 +92,10 @@ export default function Index() {
                               id={data.id}
                               key={data.id}
                               code={data.code}
-                              name={name}
+                              name={data.name}
                               showInfo={(id) => setSelected(id)}
-                              type={
-                                !currentUserClasses.includes(data.id)
-                                  ? "enroll"
-                                  : undefined
-                              }
+                              type="enroll"
+                              isEnrolled={currentUserClasses.includes(data.id)}
                               thumbnail={
                                 data.thumbnail
                                   ? createAvatarUrl(data.thumbnail)

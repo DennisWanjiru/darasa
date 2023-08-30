@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import Button from "../Button";
 import Dialog from ".";
 import Loader from "../Loader";
+import { getCurrentUser } from "@/lib/actions";
 
 type Data = ClassType & {
   category: { name: string };
@@ -58,8 +59,31 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
     return null;
   }
 
-  const { code, thumbnail, name, category, description, profile, start_date } =
-    data;
+  const {
+    id,
+    code,
+    thumbnail,
+    name,
+    category,
+    description,
+    profile,
+    start_date,
+  } = data;
+
+  const handleEnrollToClass = async () => {
+    try {
+      const currentUser = await getCurrentUser();
+
+      if (currentUser) {
+        await supabase
+          .from("enrollment")
+          .insert({ student_id: currentUser.id, class_id: id })
+          .select();
+      }
+    } catch (error) {
+      console.log({ error });
+    }
+  };
 
   return (
     <Dialog title={code} closeModal={onClose} aside>
@@ -109,7 +133,8 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
                 <span className=" text-blue-800">{profile.name}</span>
               </p>
             </div>
-            <p className="text-sm mt-1.5 text-gray-500">
+
+            <p className="text-xs mt-1.5 text-gray-500">
               Starts on {format(new Date(start_date), "MMMM dd")}
             </p>
 
@@ -117,8 +142,16 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
               <Button
                 title={isSubmitting ? "Enrolling..." : "Enroll Now"}
                 className="mt-8"
+                onClick={handleEnrollToClass}
               />
-            ) : null}
+            ) : (
+              <Button
+                title={isSubmitting ? "Unenrolling..." : "Unenroll"}
+                className="mt-8"
+                variant="inverse"
+                onClick={handleEnrollToClass}
+              />
+            )}
           </section>
         </>
       ) : (

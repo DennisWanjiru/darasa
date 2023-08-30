@@ -40,13 +40,22 @@ export default function Dialog({ title, aside, children, closeModal }: Props) {
         })}
       >
         <div className="flex justify-between items-center">
-          <div className="opacity-0"></div>
+          <Image
+            src={Cancel}
+            alt="Close"
+            onClick={closeDialog}
+            className={cn("cursor-pointer opacity-0", {
+              "opacity-100": aside,
+            })}
+          />
           <h4>{title}</h4>
           <Image
             src={Cancel}
             alt="Close"
             onClick={closeDialog}
-            className="cursor-pointer"
+            className={cn("cursor-pointer", {
+              "opacity-0": aside,
+            })}
           />
         </div>
 

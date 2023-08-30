@@ -22,6 +22,7 @@ type Props = {
   type?: "enroll" | "normal";
   instructorId: string;
   className?: string;
+  isEnrolled?: boolean;
   showInfo?: (id: string) => void;
 };
 
@@ -33,6 +34,7 @@ export default function ClassCard({
   id,
   showInfo,
   className,
+  isEnrolled,
   instructorId,
 }: Props) {
   const [instructor, setInstructor] = useState<Profile | null>(null);
@@ -94,14 +96,21 @@ export default function ClassCard({
         ) : null}
 
         {type === "enroll" && currentUser ? (
-          <form action={enrollToClass} className="w-20">
-            <input value={id} name="class_id" className="hidden" />
-            <Button
-              type="submit"
-              title="Enroll"
-              className="h-7 bg-primary text-xs rounded-md"
-            />
-          </form>
+          <>
+            {isEnrolled ? (
+              <p className="text-sm text-gray-600 text-left">Enrolled</p>
+            ) : (
+              <form action={enrollToClass} className="w-20">
+                <input value={id} name="class_id" className="hidden" />
+
+                <Button
+                  type="submit"
+                  title="Enroll"
+                  className="h-7 bg-primary text-xs rounded-md"
+                />
+              </form>
+            )}
+          </>
         ) : null}
       </div>
     </button>
