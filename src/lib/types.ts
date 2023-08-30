@@ -22,3 +22,13 @@ export type GradeData = {
   class_id: string;
   avatar_url?: string;
 };
+
+export type GradeBoundary = {
+  lowerBound: number;
+  grade: string;
+};
+
+export type GPATableEntry = {
+  minScore: number;
+  gpa: string;
+};

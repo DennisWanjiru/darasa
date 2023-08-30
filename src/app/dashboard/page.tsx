@@ -8,9 +8,19 @@ import StudentClassesTable from "@/components/tables/StudentClassesTable";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { ClassType } from "@/lib/types";
-import { createAvatarUrl } from "@/lib/utils";
+import {
+  calculateGPA,
+  calculateGrade,
+  createAvatarUrl,
+  getTime,
+} from "@/lib/utils";
 import { getCurrentUser } from "@/lib/actions";
 import InstructorClassesTable from "@/components/tables/InstructorClassesTable";
+
+type OverallScore = {
+  gpa: string;
+  grade: string;
+};
 
 export default async function Home() {
   const supabase = createServerComponentClient({ cookies });
@@ -67,15 +77,34 @@ export default async function Home() {
 
   const classes = role === "instructor" ? instructorClasses : enrolledClasses;
 
-  const getTime = () => {
-    const now = new Date();
-    const isMorning = now.getHours() > 5 && now.getHours() <= 12;
-    const isAfternoon = now.getHours() > 12 && now.getHours() <= 18;
+  const getAverageGrade = async () => {
+    const { data: grades, error } = await supabase
+      .from("grade")
+      .select("grade")
+      .eq("student_id", currentUser?.id ?? "");
 
-    if (isMorning) return "morning";
-    if (isAfternoon) return "afternoon";
-    return "evening";
+    const averageScore = grades
+      ? grades
+          .map((grade) => grade.grade as number)
+          .reduce((curr, prev) => curr + prev, 0) / grades.length
+      : 0;
+
+    const gpa = calculateGPA(averageScore);
+    const grade = calculateGrade(averageScore);
+
+    return {
+      gpa,
+      grade,
+    };
   };
+
+  const overallScore: OverallScore =
+    role === "student"
+      ? await getAverageGrade()
+      : {
+          grade: "",
+          gpa: "",
+        };
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -93,12 +122,14 @@ export default async function Home() {
           Icon={Heart}
         />
         <OverviewCard
-          title={role === "instructor" ? String(totalStudents) : "B+"}
+          title={
+            role === "instructor" ? String(totalStudents) : overallScore.grade
+          }
           subTitle={role === "instructor" ? "Total Students" : "Average Grade"}
           Icon={Plus}
         />
         <OverviewCard
-          title={role === "instructor" ? mostEnrolled.code : "3.5"}
+          title={role === "instructor" ? mostEnrolled.code : overallScore.gpa}
           subTitle={role === "instructor" ? "Most Enrolled" : "GPA"}
           Icon={Briefcase}
         />
