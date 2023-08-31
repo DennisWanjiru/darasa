@@ -6,7 +6,7 @@ interface ButtonProps extends React.ComponentProps<"button"> {
   title: string;
   icon?: boolean;
   variant?: "inverse" | "primary";
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   isSubmitting?: boolean;
 }
 
@@ -21,7 +21,7 @@ export default function Button({
 }: ButtonProps) {
   return (
     <button
-      onClick={onClick}
+      onClick={onClick && onClick}
       disabled={isSubmitting}
       className={cn(
         "flex items-center justify-center bg-primary text-white h-12 px-2.5 rounded-[10px] w-full hover:bg-gray-900",

@@ -3,6 +3,7 @@
 import { CurrentUser, Profile } from "@/lib/types";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { notify } from "./utils";
 
 export const getCurrentUser = async () => {
   const supabase = createServerComponentClient({ cookies });
@@ -10,50 +11,33 @@ export const getCurrentUser = async () => {
     data: { session },
   } = await supabase.auth.getSession();
 
-  try {
-    if (session) {
-      const { data: users, error } = await supabase
-        .from("profile")
-        .select("*")
-        .eq("email", session.user.email);
+  if (session) {
+    const { data, error } = await supabase
+      .from("profile")
+      .select()
+      .match({ email: session.user.email })
+      .single();
 
-      if (error) throw error;
-
-      const user: Profile | null = users[0] ?? null;
-
-      if (user) {
-        const { data: roles, error } = await supabase
-          .from("role")
-          .select("name")
-          .eq("id", user.role_id);
-
-        const currentUser: CurrentUser = {
-          ...user,
-          role: roles ? roles[0].name : "",
-        };
-
-        return currentUser;
-      }
+    if (error) {
+      notify("Something went wrong while fetching user", "error");
+      throw error;
     }
-  } catch (error) {
-    console.log({ error });
-  }
-};
 
-export const enrollToClass = async (formData: any) => {
-  try {
-    const class_id = formData.get("class_id");
-    const currentUser = await getCurrentUser();
+    const user: Profile | null = data ?? null;
 
-    if (currentUser) {
-      const supabase = createServerComponentClient({ cookies });
+    if (user) {
+      const { data: role } = await supabase
+        .from("role")
+        .select("name")
+        .match({ id: user.role_id })
+        .single();
 
-      await supabase
-        .from("enrollment")
-        .insert({ student_id: currentUser.id, class_id })
-        .select();
+      const currentUser: CurrentUser = {
+        ...user,
+        role: role?.name ?? "",
+      };
+
+      return currentUser;
     }
-  } catch (error) {
-    console.log({ error });
   }
 };

@@ -15,6 +15,7 @@ import { Session } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import RadioInputField from "@/components/form/RadioInputField";
 import { prefixes } from "@/lib/contants";
+import { notify } from "@/lib/utils";
 
 type FormData = Database["public"]["Tables"]["profile"]["Row"];
 type Props = {
@@ -64,23 +65,20 @@ const AccountForm = ({ majors, roles, session }: Props) => {
   }, [watch("role_id")]);
 
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
-    try {
-      const { data: user, error } = await supabase
-        .from("profile")
-        .insert(
-          checkedRole === "student"
-            ? { ...formData, prefix: null }
-            : { ...formData, major_id: null }
-        )
-        .select();
+    const { error } = await supabase
+      .from("profile")
+      .insert(
+        checkedRole === "student"
+          ? { ...formData, prefix: null }
+          : { ...formData, major_id: null }
+      )
+      .select();
 
-      if (error) {
-        throw error;
-      } else {
-        router.push("/dashboard");
-      }
-    } catch (error) {
-      console.log({ error });
+    if (error) {
+      notify("Something went wrong!", "error");
+    } else {
+      notify("Welcome! Your profile was created.");
+      router.push("/dashboard");
     }
   };
 

@@ -1,18 +1,16 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, notify } from "@/lib/utils";
 import {
   createClientComponentClient,
   createServerComponentClient,
 } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
 import Image from "next/image";
 import Button from "./Button";
-import ClassInfoModal from "./modals/ClassInfoModal";
-import Link from "next/link";
-import { enrollToClass, getCurrentUser } from "@/lib/actions";
+import { getCurrentUser } from "@/lib/actions";
 import { useEffect, useState } from "react";
 import { CurrentUser, Profile } from "@/lib/types";
+import { useRouter } from "next/navigation";
 
 type Props = {
   id: string;
@@ -40,6 +38,8 @@ export default function ClassCard({
   const [instructor, setInstructor] = useState<Profile | null>(null);
   const supabase = createClientComponentClient();
   const [currentUser, setCurrentUser] = useState<CurrentUser>();
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchInstructors = async () => {
@@ -61,8 +61,30 @@ export default function ClassCard({
     fetchInstructors();
   }, [supabase, instructorId]);
 
+  const handleEnrollToClass = async () => {
+    const currentUser = await getCurrentUser();
+
+    if (currentUser) {
+      setIsSubmitting(true);
+
+      const { error } = await supabase
+        .from("enrollment")
+        .insert({ student_id: currentUser.id, class_id: id })
+        .select();
+
+      setIsSubmitting(false);
+
+      if (error) {
+        notify("Something went wrong!", "error");
+      } else {
+        router.replace("/dashboard/explore");
+        notify("You have enrolled to " + code);
+      }
+    }
+  };
+
   return (
-    <button
+    <div
       className={cn(
         "card card-side shadow-md bg-secondary h-40 w-1/3 max-w-sm",
         className
@@ -79,7 +101,7 @@ export default function ClassCard({
         />
       </figure>
       <div
-        className={cn("card-body justify-center", {
+        className={cn("card-body justify-center text-left", {
           "py-4": type === "enroll",
         })}
       >
@@ -98,21 +120,22 @@ export default function ClassCard({
         {type === "enroll" && currentUser ? (
           <>
             {isEnrolled ? (
-              <p className="text-sm text-gray-600 text-left">Enrolled</p>
+              <p className="text-sm text-gray-600">Enrolled</p>
             ) : (
-              <form action={enrollToClass} className="w-20">
-                <input value={id} name="class_id" className="hidden" />
-
-                <Button
-                  type="submit"
-                  title="Enroll"
-                  className="h-7 bg-primary text-xs rounded-md"
-                />
-              </form>
+              <Button
+                type="submit"
+                title="Enroll"
+                isSubmitting={isSubmitting}
+                className="h-7 bg-primary text-xs rounded-md w-20"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
+                  handleEnrollToClass();
+                }}
+              />
             )}
           </>
         ) : null}
       </div>
-    </button>
+    </div>
   );
 }

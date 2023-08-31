@@ -10,6 +10,8 @@ import Button from "../Button";
 import { GradeData } from "@/lib/types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Dialog from ".";
+import { notify } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 type Props = {
   data: GradeData;
@@ -28,6 +30,7 @@ export default function AddGradeModal({ data, closeModal }: Props) {
   const { id, class_id, student_id, name, email, major, grade, avatar_url } =
     data;
   const supabase = createClientComponentClient();
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -44,24 +47,20 @@ export default function AddGradeModal({ data, closeModal }: Props) {
   });
 
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
-    try {
-      const { data: classData, error } = await supabase
-        .from("grade")
-        .upsert({
-          ...formData,
-        })
-        .eq("id", id)
-        .select();
+    const { data: classData, error } = await supabase
+      .from("grade")
+      .upsert({
+        ...formData,
+      })
+      .eq("id", id)
+      .select();
 
-      if (error) {
-        throw error;
-        // TODO: Unique code error
-      } else {
-        closeModal();
-        // TODO: Show success alert
-      }
-    } catch (error) {
-      console.log({ error });
+    if (error) {
+      notify("Something went wrong!", "error");
+    } else {
+      router.refresh();
+      closeModal();
+      notify("Grade has been saved!");
     }
   };
 
@@ -88,7 +87,8 @@ export default function AddGradeModal({ data, closeModal }: Props) {
           error={errors.grade?.message}
         />
         <Button
-          title={isSubmitting ? "Saving Grade..." : "Save Grade"}
+          isSubmitting={isSubmitting}
+          title="Save Grade"
           icon
           className="mt-2"
         />

@@ -72,7 +72,7 @@ export default function Index() {
 
       {categories
         ? categories?.map(({ name, class: classes }) => (
-            <>
+            <div key={name}>
               {classes.length ? (
                 <section className="mt-10">
                   <div className="flex justify-between items-center">
@@ -109,7 +109,7 @@ export default function Index() {
                   </div>
                 </section>
               ) : null}
-            </>
+            </div>
           ))
         : null}
 

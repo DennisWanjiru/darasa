@@ -80,24 +80,21 @@ export default function CreateClassModal({
   }, [isOpen]);
 
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
-    try {
-      const { data: classData, error } = await supabase
-        .from("class")
-        .insert({
-          ...formData,
-        })
-        .select();
-      if (error) {
-        throw error;
-        // TODO: Unique code error
-      } else {
-        reset();
-        closeModal();
-        router.refresh();
-        notify("The class was created!");
-      }
-    } catch (error) {
-      console.log({ error });
+    const { data: classData, error } = await supabase
+      .from("class")
+      .insert({
+        ...formData,
+      })
+      .select();
+
+    if (error) {
+      // TODO: Unique code error
+      notify("Something went wrong!", "error");
+    } else {
+      reset();
+      closeModal();
+      router.refresh();
+      notify("The class was created!");
     }
   };
 

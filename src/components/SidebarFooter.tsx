@@ -25,10 +25,12 @@ export default function SidebarFooter({ user }: Props) {
         />
 
         <div className="flex flex-col">
-          <p>
+          <p className="truncate">
             {user.prefix ? `${user.prefix}.` : ""} {user?.name}
           </p>
-          <p>{user.role === "student" ? "Student" : "Instuctor"} Account</p>
+          <p className="truncate">
+            {user.role === "student" ? "Student" : "Instuctor"} Account
+          </p>
         </div>
         <Image src={UpDown} alt="more" />
       </label>

@@ -10,6 +10,8 @@ import Button from "../Button";
 import Dialog from ".";
 import Loader from "../Loader";
 import { getCurrentUser } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+import { notify } from "@/lib/utils";
 
 type Data = ClassType & {
   category: { name: string };
@@ -28,6 +30,7 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
   const supabase = createClientComponentClient();
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -71,17 +74,25 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
   } = data;
 
   const handleEnrollToClass = async () => {
-    try {
-      const currentUser = await getCurrentUser();
+    const currentUser = await getCurrentUser();
 
-      if (currentUser) {
-        await supabase
-          .from("enrollment")
-          .insert({ student_id: currentUser.id, class_id: id })
-          .select();
+    if (currentUser) {
+      setIsSubmitting(true);
+
+      const { error } = await supabase
+        .from("enrollment")
+        .insert({ student_id: currentUser.id, class_id: id })
+        .select();
+
+      setIsSubmitting(false);
+
+      if (error) {
+        notify("Something went wrong!", "error");
+      } else {
+        router.refresh();
+        onClose();
+        notify("You have enrolled to " + code);
       }
-    } catch (error) {
-      console.log({ error });
     }
   };
 
@@ -140,16 +151,17 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
 
             {enroll ? (
               <Button
-                title={isSubmitting ? "Enrolling..." : "Enroll Now"}
+                title="Enroll Now"
                 className="mt-8"
                 onClick={handleEnrollToClass}
+                isSubmitting={isSubmitting}
               />
             ) : (
               <Button
-                title={isSubmitting ? "Unenrolling..." : "Unenroll"}
+                title="Unenroll"
                 className="mt-8"
                 variant="inverse"
-                onClick={handleEnrollToClass}
+                isSubmitting={isSubmitting}
               />
             )}
           </section>

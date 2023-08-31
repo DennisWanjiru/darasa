@@ -38,12 +38,13 @@ const schema = z.object({
     .nonempty("Name is required")
     .min(2, "Name should be at least 2 letters"),
   major_id: z.string().optional(),
+  role_id: z.string(),
   email: z.string().email(),
   bio: z.string().optional(),
 });
 
 export default function ProfileModal({ user, onClose }: Props) {
-  const { id, avatar_url, email, name, major_id, bio, prefix } = user;
+  const { id, avatar_url, email, name, major_id, bio, prefix, role_id } = user;
   const supabase = createClientComponentClient();
   const [majors, setMajors] = useState<Options>();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(avatar_url);
@@ -61,8 +62,9 @@ export default function ProfileModal({ user, onClose }: Props) {
       name,
       bio,
       major_id: major_id ?? "",
-      prefix,
-      avatar_url: avatar_url ?? "",
+      prefix: prefix ?? "",
+      avatar_url: avatar_url ?? null,
+      role_id,
     },
   });
 
@@ -88,22 +90,24 @@ export default function ProfileModal({ user, onClose }: Props) {
     const user = await getCurrentUser();
 
     if (user) {
-      console.log({ formData });
       const { data, error } = await supabase
         .from("profile")
-        .update(
+        .upsert(
           user.role === "student"
-            ? { ...formData, prefix: null }
-            : { ...formData, major_id: null }
+            ? { ...formData, id, prefix: null }
+            : { ...formData, id, major_id: null }
         )
-        .eq("id", id)
         .select();
 
-      router.refresh();
-      // @ts-ignore
-      window.profile.close();
-      onClose();
-      notify("Profile has been updated!");
+      if (error) {
+        notify("Something went wrong!", "error");
+      } else {
+        router.refresh();
+        // @ts-ignore
+        window.profile.close();
+        onClose();
+        notify("Profile has been updated!");
+      }
     }
   };
 
@@ -134,7 +138,6 @@ export default function ProfileModal({ user, onClose }: Props) {
               uid={id}
               url={avatarUrl}
               onUpload={(url) => {
-                console.log({ url });
                 setAvatarUrl(url);
                 setValue("avatar_url", url);
               }}

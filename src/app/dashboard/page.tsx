@@ -87,7 +87,14 @@ export default async function Home() {
       ? grades
           .map((grade) => grade.grade as number)
           .reduce((curr, prev) => curr + prev, 0) / grades.length
-      : 0;
+      : null;
+
+    if (!averageScore) {
+      return {
+        gpa: "N/A",
+        grade: "N/A",
+      };
+    }
 
     const gpa = calculateGPA(averageScore);
     const grade = calculateGrade(averageScore);
@@ -139,26 +146,28 @@ export default async function Home() {
         />
       </section>
 
-      <section className="mt-10">
-        <h3 className="font-semibold text-lg">Today&apos;s Classes</h3>
+      {classes?.length ? (
+        <section className="mt-10">
+          <h3 className="font-semibold text-lg">Today&apos;s Classes</h3>
 
-        <div className="flex space-x-9 mt-4">
-          {classes
-            ? classes
-                .slice(0, 3)
-                .map(({ id, code, name, thumbnail, instructor_id }) => (
-                  <ClassCard
-                    id={id}
-                    key={id}
-                    code={code}
-                    name={name}
-                    thumbnail={thumbnail ? createAvatarUrl(thumbnail) : Supa}
-                    instructorId={instructor_id}
-                  />
-                ))
-            : null}
-        </div>
-      </section>
+          <div className="flex space-x-9 mt-4">
+            {classes
+              ? classes
+                  .slice(0, 3)
+                  .map(({ id, code, name, thumbnail, instructor_id }) => (
+                    <ClassCard
+                      id={id}
+                      key={id}
+                      code={code}
+                      name={name}
+                      thumbnail={thumbnail ? createAvatarUrl(thumbnail) : Supa}
+                      instructorId={instructor_id}
+                    />
+                  ))
+              : null}
+          </div>
+        </section>
+      ) : null}
 
       <section className="mt-10 p-7 bg-secondary rounded-2xl shadow-md">
         <h3 className="font-semibold text-lg">My Classes</h3>
