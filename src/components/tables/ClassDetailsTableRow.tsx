@@ -10,6 +10,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
 import Edit from "@/assets/edit.svg";
 import { useEffect, useState } from "react";
+import Avatar from "../Avatar";
 
 type Props = {
   data: Enrollment;
@@ -75,23 +76,14 @@ export default function ClassDetailsTableRow({ data, onSelectRow }: Props) {
       <td>{grade?.grade ? `${grade?.grade}%` : "-"}</td>
       <td className="text-blue-500">
         <div className="flex items-center space-x-3">
-          <div className="avatar">
-            <div className="mask mask-circle w-12 h-12 bg-green-800">
-              {student?.avatar_url ? (
-                <Image
-                  src={createAvatarUrl(student.avatar_url)}
-                  alt="cover"
-                  height={48}
-                  width={48}
-                  className="object-cover h-full"
-                />
-              ) : (
-                <div className=" flex items-center justify-center text-2xl h-12 w-12 text-white">
-                  {getUserFirstLetter(student?.name ?? "")}
-                </div>
-              )}
-            </div>
-          </div>
+          {student?.name ? (
+            <Avatar
+              name={student.name}
+              variant="circle"
+              url={student?.avatar_url ?? undefined}
+            />
+          ) : null}
+
           <div>
             <div className="font-semibold text-blue-500">{student?.name}</div>
           </div>

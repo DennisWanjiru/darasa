@@ -58,11 +58,13 @@ const AccountForm = ({ majors, roles, session }: Props) => {
   });
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
+  const role_id = watch("role_id");
+
   useEffect(() => {
-    const val = getValues("role_id");
+    const val = role_id;
     const role: Role = roles.filter((role) => role.id === val)[0];
     setCheckedRole(role?.name ?? "");
-  }, [watch("role_id")]);
+  }, [role_id, roles]);
 
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
     const { error } = await supabase

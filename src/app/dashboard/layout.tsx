@@ -1,11 +1,12 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 import "../globals.css";
 import Sidebar from "@/components/Sidebar";
 import Modal from "@/components/modals/ProfileModal";
+import { getCurrentUser } from "@/lib/actions";
 
 export const metadata: Metadata = {
   title: "Darasa | Dahsboard",
@@ -20,6 +21,9 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const supabase = createServerComponentClient({ cookies });
+  const currentUser = await getCurrentUser();
+  const headersList = headers();
+  const pathname = headersList.get("x-invoke-path") || "";
 
   const {
     data: { session },
@@ -41,6 +45,16 @@ export default async function DashboardLayout({
 
   if (!users?.length) {
     redirect("/account");
+  }
+
+  const instructorOnly =
+    currentUser?.role === "student" && pathname === "/dashboard/classes";
+
+  const studentOnly =
+    currentUser?.role === "instructor" && pathname === "/dashboard/explore";
+
+  if (instructorOnly || studentOnly) {
+    redirect("/dashboard");
   }
 
   return (
