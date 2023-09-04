@@ -1,8 +1,6 @@
 "use client";
 
-import Cancel from "@/assets/cancel.svg";
 import { notify } from "@/lib/utils";
-import Image from "next/image";
 import InputField from "../form/InputField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CurrentUser, Major } from "@/lib/types";
@@ -17,6 +15,7 @@ import ImageUploader from "../ImageUploader";
 import { prefixes } from "@/lib/contants";
 import { useRouter } from "next/navigation";
 import { getCurrentUser } from "@/lib/actions";
+import Dialog from ".";
 
 type Props = {
   user: CurrentUser;
@@ -99,12 +98,10 @@ export default function ProfileModal({ user, onClose }: Props) {
         )
         .select();
 
+      router.refresh();
       if (error) {
         notify("Something went wrong!", "error");
       } else {
-        router.refresh();
-        // @ts-ignore
-        window.profile.close();
         onClose();
         notify("Profile has been updated!");
       }
@@ -112,26 +109,8 @@ export default function ProfileModal({ user, onClose }: Props) {
   };
 
   return (
-    <dialog id="profile" className="modal justify-end align-bottom">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="modal-box h-screen max-h-[calc(100vh)] border-b-raius rounded-e-none rounded-es-none rounded-tr-xl rounded-tl-xl bg-secondary text-primary w-[369px] mr-3 mt-4"
-      >
-        <div className="flex items-center">
-          <button
-            type="button"
-            onClick={() => {
-              // @ts-ignore
-              window.profile.close();
-              onClose();
-            }}
-            className="btn bg-transparent hover:bg-transparent border-none"
-          >
-            <Image src={Cancel} alt="Close" />
-          </button>
-          <h3 className="font-bold text-lg ml-10">Edit Profile</h3>
-        </div>
-
+    <Dialog title="Edit Profile" closeModal={onClose} aside>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <section className="flex mt-20 justify-center w-full">
           <div className="justify-center flex">
             <ImageUploader
@@ -200,6 +179,6 @@ export default function ProfileModal({ user, onClose }: Props) {
           />
         </section>
       </form>
-    </dialog>
+    </Dialog>
   );
 }

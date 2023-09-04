@@ -12,10 +12,6 @@ export default function ViewProfileLink({ user }: { user: CurrentUser }) {
       <li
         onClick={() => {
           setOpenModal(true);
-          if (openModal) {
-            // @ts-ignore
-            window.profile.showModal();
-          }
         }}
       >
         <a>View Profile</a>

@@ -86,7 +86,7 @@ export default function ClassCard({
   return (
     <div
       className={cn(
-        "card card-side shadow-md bg-secondary h-40 w-1/3 max-w-sm",
+        "card card-side shadow-md bg-secondary h-40 w-1/3 max-w-sm cursor-pointer",
         className
       )}
       onClick={() => showInfo && showInfo(id)}
