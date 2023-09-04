@@ -1,5 +1,6 @@
 import AddClassLink from "@/components/AddClassLink";
 import Button from "@/components/Button";
+import EditClassModal from "@/components/modals/EditClassModal";
 import ProfileModal from "@/components/modals/ProfileModal";
 import InstructorClassesTable from "@/components/tables/InstructorClassesTable";
 import { getCurrentUser } from "@/lib/actions";
@@ -81,6 +82,8 @@ export default async function Index() {
           <InstructorClassesTable classes={completedClasses} />
         </section>
       ) : null}
+
+      <EditClassModal />
     </div>
   );
 }

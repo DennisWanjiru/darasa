@@ -34,9 +34,20 @@ export default function ClassActions({
       console.log({ error });
     }
   };
+
+  const handleEditClass = () => {
+    router.push("/dashboard/classes?id=" + id);
+  };
+
   return (
     <div className="flex space-x-1.5 items-center">
-      <Image src={Edit} alt="edit" className="cursor-pointer" />
+      <Image
+        src={Edit}
+        alt="edit"
+        className="cursor-pointer"
+        onClick={handleEditClass}
+      />
+
       <Image
         height={30}
         width={30}

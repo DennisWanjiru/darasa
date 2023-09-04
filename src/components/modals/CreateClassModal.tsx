@@ -164,7 +164,7 @@ export default function CreateClassModal({
         <DatePickerField
           label="Start Date"
           name="start_date"
-          setStartDate={(date) => {
+          setDate={(date) => {
             setValue("start_date", date.toISOString());
           }}
         />
@@ -172,7 +172,7 @@ export default function CreateClassModal({
         <DatePickerField
           label="End Date"
           name="end_date"
-          setStartDate={(date) => {
+          setDate={(date) => {
             setValue("end_date", date.toISOString());
           }}
         />

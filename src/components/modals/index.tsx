@@ -23,6 +23,7 @@ export default function Dialog({ title, aside, children, closeModal }: Props) {
   const closeDialog = () => {
     dialogRef.current?.close();
     closeModal();
+    dialogRef.current?.close();
   };
 
   return (

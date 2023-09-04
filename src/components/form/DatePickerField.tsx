@@ -9,18 +9,22 @@ interface DatePickerFieldProps {
   label: string;
   name: string;
   error?: string;
-  setStartDate: (date: Date) => void;
+  setDate: (date: Date) => void;
   disabled?: boolean;
+  defaultDate?: Date;
 }
 
 const DatePickerField: React.FC<DatePickerFieldProps> = ({
   label,
   name,
   error,
-  setStartDate,
+  setDate,
   disabled,
+  defaultDate,
 }) => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    defaultDate ?? new Date()
+  );
 
   return (
     <div className="flex flex-col mb-3">
@@ -32,7 +36,7 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
         selected={selectedDate}
         onChange={(date) => {
           if (date) {
-            setStartDate(date);
+            setDate(date);
             setSelectedDate(date);
           }
         }}
