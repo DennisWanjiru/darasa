@@ -10,7 +10,6 @@ import Button from "../Button";
 import Dialog from ".";
 import Loader from "../Loader";
 import { getCurrentUser } from "@/lib/actions";
-import { useRouter } from "next/navigation";
 import { notify } from "@/lib/utils";
 
 type Data = ClassType & {
@@ -25,28 +24,28 @@ type Props = {
 };
 
 export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
+  const supabase = createClientComponentClient();
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const [data, setData] = useState<Data | null>(null);
-  const supabase = createClientComponentClient();
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async (id: string) => {
-      try {
-        setIsLoading(true);
-        const { data: classes } = await supabase
-          .from("class")
-          .select(`*, category(name), profile(name, avatar_url)`)
-          .eq("id", id);
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("class")
+        .select(`*, category(name), profile(name, avatar_url)`)
+        .match({ id })
+        .single();
 
-        const classData = classes ? (classes[0] as Data) : null;
+      setIsLoading(false);
+
+      if (error) {
+        notify("Something went wrong!", "error");
+      } else {
+        const classData: Data = data ?? null;
         setData(classData);
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -89,9 +88,34 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
       if (error) {
         notify("Something went wrong!", "error");
       } else {
-        router.refresh();
         onClose();
         notify("You have enrolled to " + code);
+        // TODO: Find a better solution for improved UX behavior
+        document.location.reload();
+      }
+    }
+  };
+
+  const handleUnEnroll = async () => {
+    const currentUser = await getCurrentUser();
+
+    if (currentUser) {
+      setIsSubmitting(true);
+
+      const { error } = await supabase
+        .from("enrollment")
+        .delete()
+        .match({ class_id: id, student_id: currentUser.id });
+
+      setIsSubmitting(false);
+
+      if (error) {
+        notify("Something went wrong!", "error");
+      } else {
+        notify("You have unenrolled from " + code);
+        onClose();
+        // TODO: Find a better solution for improved UX behavior
+        document.location.reload();
       }
     }
   };
@@ -161,6 +185,7 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
                 title="Unenroll"
                 className="mt-8"
                 variant="inverse"
+                onClick={handleUnEnroll}
                 isSubmitting={isSubmitting}
               />
             )}

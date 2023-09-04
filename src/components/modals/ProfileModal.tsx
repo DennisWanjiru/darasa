@@ -13,7 +13,6 @@ import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ImageUploader from "../ImageUploader";
 import { prefixes } from "@/lib/contants";
-import { useRouter } from "next/navigation";
 import { getCurrentUser } from "@/lib/actions";
 import Dialog from ".";
 
@@ -47,7 +46,6 @@ export default function ProfileModal({ user, onClose }: Props) {
   const supabase = createClientComponentClient();
   const [majors, setMajors] = useState<Options>();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(avatar_url);
-  const router = useRouter();
 
   const {
     handleSubmit,
@@ -98,12 +96,13 @@ export default function ProfileModal({ user, onClose }: Props) {
         )
         .select();
 
-      router.refresh();
       if (error) {
         notify("Something went wrong!", "error");
       } else {
-        onClose();
         notify("Profile has been updated!");
+        onClose();
+        // TODO: Find a better solution for improved UX behavior
+        document.location.reload();
       }
     }
   };

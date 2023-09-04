@@ -1,16 +1,12 @@
 "use client";
 
 import { cn, notify } from "@/lib/utils";
-import {
-  createClientComponentClient,
-  createServerComponentClient,
-} from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
 import Button from "./Button";
 import { getCurrentUser } from "@/lib/actions";
 import { useEffect, useState } from "react";
 import { CurrentUser, Profile } from "@/lib/types";
-import { useRouter } from "next/navigation";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 type Props = {
   id: string;
@@ -38,7 +34,6 @@ export default function ClassCard({
   const [instructor, setInstructor] = useState<Profile | null>(null);
   const supabase = createClientComponentClient();
   const [currentUser, setCurrentUser] = useState<CurrentUser>();
-  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -77,8 +72,9 @@ export default function ClassCard({
       if (error) {
         notify("Something went wrong!", "error");
       } else {
-        router.replace("/dashboard/explore");
         notify("You have enrolled to " + code);
+        // TODO: Find a better solution for improved UX behavior
+        document.location.reload();
       }
     }
   };
