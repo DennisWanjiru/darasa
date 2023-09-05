@@ -2,7 +2,6 @@
 
 import { notify } from "@/lib/utils";
 import React, { useEffect, useRef, useState } from "react";
-import ImageUploader from "../ImageUploader";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Database } from "@/lib/schema";
 import { z } from "zod";
@@ -15,6 +14,7 @@ import { Category, ClassType } from "@/lib/types";
 
 import DatePickerField from "../form/DatePickerField";
 import { useRouter } from "next/navigation";
+import ImageUploader from "../ImageUploader";
 
 type FormData = Database["public"]["Tables"]["class"]["Row"];
 
@@ -54,6 +54,7 @@ export default function ClassForm({ data, categories, closeModal }: Props) {
     end_date,
     instructor_id,
   } = data;
+
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(thumbnail);
   const supabase = createClientComponentClient();
   const router = useRouter();
@@ -71,7 +72,7 @@ export default function ClassForm({ data, categories, closeModal }: Props) {
     defaultValues: {
       id,
       code,
-      thumbnail: thumbnail ?? "",
+      thumbnail,
       name,
       category_id,
       description,

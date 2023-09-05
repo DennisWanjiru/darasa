@@ -1,13 +1,7 @@
 import { ClassType } from "@/lib/types";
-import {
-  cn,
-  createAvatarUrl,
-  getStatus,
-  getUserFirstLetter,
-} from "@/lib/utils";
+import { cn, getStatus } from "@/lib/utils";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import Image from "next/image";
 import Link from "next/link";
 import Button from "../Button";
 import ClassActions from "../ClassActions";

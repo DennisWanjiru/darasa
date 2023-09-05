@@ -1,15 +1,7 @@
 import { ClassType, Grade } from "@/lib/types";
-import {
-  calculateGrade,
-  cn,
-  createAvatarUrl,
-  getStatus,
-  getUserFirstLetter,
-} from "@/lib/utils";
+import { calculateGrade, cn, getStatus } from "@/lib/utils";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import Image from "next/image";
-import { differenceInDays, format } from "date-fns";
 import Button from "../Button";
 import Avatar from "../Avatar";
 import { getCurrentUser } from "@/lib/actions";

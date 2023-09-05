@@ -7,17 +7,14 @@ import Image from "next/image";
 import Add from "@/assets/add.svg";
 import { Database } from "@/lib/schema";
 import { Profile } from "@/lib/types";
-import Loader from "./Loader";
 
-export default function ImageUploader({
-  uid,
-  url,
-  onUpload,
-}: {
+type Props = {
   uid: string;
   url: Profile["avatar_url"];
   onUpload: (url: string) => void;
-}) {
+};
+
+export default function ImageUploader({ uid, url, onUpload }: Props) {
   const supabase = createClientComponentClient<Database>();
   const [avatarUrl, setAvatarUrl] = useState<Profile["avatar_url"]>(null);
   const [uploading, setUploading] = useState(false);

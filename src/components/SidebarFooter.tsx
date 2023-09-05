@@ -34,7 +34,7 @@ export default function SidebarFooter({ user }: Props) {
 
       <ul
         tabIndex={0}
-        className="dropdown-content z-[1] menu p-2 bg-secondary rounded-box w-52 text-primary shadow-md mb-5 m-7"
+        className="dropdown-content menu p-2 bg-secondary rounded-box w-52 text-primary shadow-md mb-5 m-7"
       >
         <ViewProfileLink user={user} />
         <form action="" method="post">

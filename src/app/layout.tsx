@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={nunito.className}>
         {children}
-        <ToastContainer />
+        <ToastContainer className="z-50" />
       </body>
     </html>
   );

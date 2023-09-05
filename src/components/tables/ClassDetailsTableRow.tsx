@@ -1,11 +1,7 @@
 "use client";
 
 import { Enrollment, Grade, GradeData, Profile } from "@/lib/types";
-import {
-  calculateGrade,
-  createAvatarUrl,
-  getUserFirstLetter,
-} from "@/lib/utils";
+import { calculateGrade } from "@/lib/utils";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
 import Edit from "@/assets/edit.svg";
