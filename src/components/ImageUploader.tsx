@@ -7,6 +7,7 @@ import Image from "next/image";
 import Add from "@/assets/add.svg";
 import { Database } from "@/lib/schema";
 import { Profile } from "@/lib/types";
+import Loader from "./Loader";
 
 export default function ImageUploader({
   uid,
@@ -75,17 +76,32 @@ export default function ImageUploader({
 
   return (
     <div className="relative">
-      {avatarUrl ? (
-        <Image
-          width={96}
-          height={96}
-          src={avatarUrl}
-          alt="Avatar"
-          className="h-24 rounded-[20px] object-cover"
-        />
-      ) : (
-        <div className="h-24 w-24 bg-gray-100 rounded-[20px]" />
-      )}
+      <>
+        {avatarUrl ? (
+          <div className="relative">
+            <Image
+              width={96}
+              height={96}
+              src={avatarUrl}
+              alt="Avatar"
+              className="h-24 rounded-[20px] object-cover"
+            />
+            {uploading ? (
+              <div className="absolute inset-0 flex items-center rounded-[20px] justify-center bg-[#1c18186e]">
+                <span className="loading loading-dots loading-sm text-white" />
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <div className="h-24 w-24 bg-gray-100 rounded-[20px] relative">
+            {uploading ? (
+              <div className="absolute inset-0 flex items-center rounded-[20px] justify-center bg-[#1c18186e]">
+                <span className="loading loading-dots loading-sm text-white" />
+              </div>
+            ) : null}
+          </div>
+        )}
+      </>
 
       <div className="absolute -right-2 -bottom-1">
         <label htmlFor="avatar" className="cursor-pointer">

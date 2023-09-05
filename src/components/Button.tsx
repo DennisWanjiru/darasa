@@ -34,7 +34,7 @@ export default function Button({
       )}
     >
       {isSubmitting ? (
-        <span className="loading loading-dots loading-sm"></span>
+        <span className="loading loading-dots loading-sm" />
       ) : (
         <>
           {icon ? (
