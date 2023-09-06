@@ -118,3 +118,11 @@ export const notify = (
     theme: "light",
   });
 };
+
+export const truncate = (word: string, length: number) => {
+  if (word.length > length) {
+    return word.slice(0, length) + "...";
+  }
+
+  return word;
+};

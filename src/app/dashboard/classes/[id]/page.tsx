@@ -8,7 +8,11 @@ import AddGradeModal from "@/components/modals/AddGradeModal";
 import { Enrollment, GradeData } from "@/lib/types";
 import Loader from "@/components/Loader";
 
-type Props = { params: { id: string } };
+type Props = {
+  params: {
+    id: string;
+  };
+};
 
 export default function Index({ params }: Props) {
   const supabase = createClientComponentClient();

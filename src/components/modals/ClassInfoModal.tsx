@@ -10,7 +10,7 @@ import Button from "../Button";
 import Dialog from ".";
 import Loader from "../Loader";
 import { getCurrentUser } from "@/lib/actions";
-import { notify } from "@/lib/utils";
+import { getStatus, notify } from "@/lib/utils";
 import Avatar from "../Avatar";
 
 type Data = ClassType & {
@@ -82,6 +82,7 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
     category,
     description,
     profile,
+    end_date,
     start_date,
   } = data;
 
@@ -132,6 +133,8 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
       }
     }
   };
+
+  const isCompleted = getStatus(start_date, end_date) === "Completed";
 
   return (
     <Dialog title={code} closeModal={onClose} aside>
@@ -200,13 +203,17 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
                 isSubmitting={isSubmitting}
               />
             ) : (
-              <Button
-                title="Unenroll"
-                className="mt-8"
-                variant="inverse"
-                onClick={handleUnEnroll}
-                isSubmitting={isSubmitting}
-              />
+              <>
+                {!isCompleted ? (
+                  <Button
+                    title="Unenroll"
+                    className="mt-8"
+                    variant="inverse"
+                    onClick={handleUnEnroll}
+                    isSubmitting={isSubmitting}
+                  />
+                ) : null}
+              </>
             )}
           </section>
         </>

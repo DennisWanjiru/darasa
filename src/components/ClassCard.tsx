@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, notify } from "@/lib/utils";
+import { cn, notify, truncate } from "@/lib/utils";
 import Image from "next/image";
 import Button from "./Button";
 import { getCurrentUser } from "@/lib/actions";
@@ -102,13 +102,15 @@ export default function ClassCard({
         })}
       >
         <h4 className="invert-[.3] text-left">{code}</h4>
-        <h3 className="card-title truncate invert-[.2]">{name}</h3>
+        <h3 className="card-title truncate invert-[.2]">
+          {truncate(name, 18)}
+        </h3>
 
         {instructor ? (
           <p className="text-sm truncate">
             Instructor:{" "}
             <span className="text-blue-500">
-              {instructor.prefix}. {instructor.name}{" "}
+              {truncate(`${instructor.prefix}. ${instructor.name}`, 15)}
             </span>
           </p>
         ) : null}
