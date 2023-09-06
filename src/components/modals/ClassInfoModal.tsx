@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { ClassType } from "@/lib/types";
-import Supa from "@/assets/supaman.jpeg";
+import noImage from "@/assets/noImage.jpg";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { format } from "date-fns";
 import Button from "../Button";
@@ -11,6 +11,7 @@ import Dialog from ".";
 import Loader from "../Loader";
 import { getCurrentUser } from "@/lib/actions";
 import { notify } from "@/lib/utils";
+import Avatar from "../Avatar";
 
 type Data = ClassType & {
   category: { name: string };
@@ -29,6 +30,7 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
   const [data, setData] = useState<Data | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [studentsCount, setStudentsCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -49,9 +51,20 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
       }
     };
 
+    const fetchEnrollments = async (class_id: string) => {
+      const { data } = await supabase
+        .from("enrollment")
+        .select("count")
+        .match({ class_id })
+        .single();
+
+      setStudentsCount(data?.count ?? 0);
+    };
+
     if (selected) {
       dialogRef?.current?.showModal();
       fetchData(selected);
+      fetchEnrollments(selected);
     } else {
       dialogRef?.current?.close();
     }
@@ -130,7 +143,7 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
                 src={
                   thumbnail
                     ? `${process.env.NEXT_PUBLIC_STORAGE_BUCKET_URL}/avatars/${thumbnail}`
-                    : Supa
+                    : noImage
                 }
                 alt="class_image"
                 width={112}
@@ -152,17 +165,12 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
 
           <section className="mt-3">
             <div className="flex items-center space-x-3">
-              <Image
-                className="rounded-full h-10 w-10"
-                height={40}
-                width={40}
-                alt="instructor_avatar"
-                src={
-                  profile.avatar_url
-                    ? `${process.env.NEXT_PUBLIC_STORAGE_BUCKET_URL}/avatars/${profile.avatar_url}`
-                    : Supa
-                }
+              <Avatar
+                name={profile.name}
+                url={profile.avatar_url ?? undefined}
+                variant="circle"
               />
+
               <p>
                 Instructor:{" "}
                 <span className=" text-blue-800">{profile.name}</span>
@@ -172,6 +180,17 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
             <p className="text-xs mt-1.5 text-gray-500">
               Starts on {format(new Date(start_date), "MMMM dd")}
             </p>
+
+            {studentsCount ? (
+              <div className="flex items-center mt-1">
+                <p className="font-bold mr-1">{studentsCount}</p>
+                <span className="font-normal text-sm">already enrolled</span>
+              </div>
+            ) : (
+              <p className="mt-1 text-xs text-gray-600">
+                Be the first to enroll
+              </p>
+            )}
 
             {enroll ? (
               <Button

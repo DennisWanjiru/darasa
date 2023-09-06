@@ -2,7 +2,7 @@ import Heart from "@/assets/heart.svg";
 import Plus from "@/assets/plus.svg";
 import Briefcase from "@/assets/briefcase.svg";
 import OverviewCard from "@/components/OverviewCard";
-import Supa from "@/assets/supaman.jpeg";
+import noImage from "@/assets/noImage.jpg";
 import ClassCard from "@/components/ClassCard";
 import StudentClassesTable from "@/components/tables/StudentClassesTable";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -161,7 +161,9 @@ export default async function Home() {
                       key={id}
                       code={code}
                       name={name}
-                      thumbnail={thumbnail ? createAvatarUrl(thumbnail) : Supa}
+                      thumbnail={
+                        thumbnail ? createAvatarUrl(thumbnail) : noImage
+                      }
                       instructorId={instructor_id}
                     />
                   ))

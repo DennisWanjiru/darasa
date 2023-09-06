@@ -7,8 +7,8 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { getCurrentUser } from "@/lib/actions";
 import ClassCard from "@/components/ClassCard";
 import type { ClassType, CurrentUser } from "@/lib/types";
-import { createAvatarUrl } from "@/lib/utils";
-import Supa from "@/assets/supaman.jpeg";
+import { createAvatarUrl, getStatus } from "@/lib/utils";
+import noImage from "@/assets/noImage.jpg";
 import ClassInfoModal from "@/components/modals/ClassInfoModal";
 import Loader from "@/components/Loader";
 
@@ -89,22 +89,29 @@ export default function Index() {
                       ? classes
                           .slice(0, 3)
                           .map((data) => (
-                            <ClassCard
-                              id={data.id}
-                              key={data.id}
-                              code={data.code}
-                              name={data.name}
-                              showInfo={(id) => setSelected(id)}
-                              type="enroll"
-                              isEnrolled={currentUserClasses.includes(data.id)}
-                              thumbnail={
-                                data.thumbnail
-                                  ? createAvatarUrl(data.thumbnail)
-                                  : Supa
-                              }
-                              instructorId={data.instructor_id}
-                              className="mt-6"
-                            />
+                            <>
+                              {getStatus(data.start_date, data.end_date) !==
+                              "Completed" ? (
+                                <ClassCard
+                                  id={data.id}
+                                  key={data.id}
+                                  code={data.code}
+                                  name={data.name}
+                                  showInfo={(id) => setSelected(id)}
+                                  type="enroll"
+                                  isEnrolled={currentUserClasses.includes(
+                                    data.id
+                                  )}
+                                  thumbnail={
+                                    data.thumbnail
+                                      ? createAvatarUrl(data.thumbnail)
+                                      : noImage
+                                  }
+                                  instructorId={data.instructor_id}
+                                  className="mt-6"
+                                />
+                              ) : null}
+                            </>
                           ))
                       : null}
                   </div>
