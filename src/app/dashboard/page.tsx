@@ -12,6 +12,7 @@ import {
   calculateGPA,
   calculateGrade,
   createAvatarUrl,
+  getStatus,
   getTime,
 } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/actions";
@@ -36,16 +37,17 @@ export default async function Home() {
   const { data: instructorClasses } = await supabase
     .from("class")
     .select()
-    .eq("instructor_id", currentUser?.id ?? "");
+    .match({ instructor_id: currentUser?.id ?? "" });
 
   const getCount = async (id: string) => {
     const { data } = await supabase
       .from("enrollment")
       .select("count")
-      .eq("class_id", id);
+      .match({ class_id: id })
+      .single();
 
     if (data) {
-      const count: number = data[0].count;
+      const count: number = data.count;
       return count;
     }
 
@@ -76,7 +78,8 @@ export default async function Home() {
     | ClassType[]
     | undefined;
 
-  const classes = role === "instructor" ? instructorClasses : enrolledClasses;
+  const classes: ClassType[] | null =
+    role === "instructor" ? instructorClasses : enrolledClasses ?? null;
 
   const getAverageGrade = async () => {
     const { data: grades, error } = await supabase
@@ -114,6 +117,13 @@ export default async function Home() {
           gpa: "",
         };
 
+  const upcomingClasses = classes
+    ? classes.filter(({ start_date, end_date }) => {
+        const isUpcoming = getStatus(start_date, end_date) === "Upcoming";
+        return isUpcoming;
+      })
+    : [];
+
   return (
     <div className="max-w-6xl mx-auto">
       <h2 className="font-bold text-2xl">
@@ -149,11 +159,11 @@ export default async function Home() {
 
       {classes?.length ? (
         <section className="mt-10">
-          <h3 className="font-semibold text-lg">Today&apos;s Classes</h3>
+          <h3 className="font-semibold text-lg">Upcoming Classes</h3>
 
           <div className="flex space-x-9 mt-4">
-            {classes
-              ? classes
+            {upcomingClasses
+              ? upcomingClasses
                   .slice(0, 3)
                   .map(({ id, code, name, thumbnail, instructor_id }) => (
                     <ClassCard
