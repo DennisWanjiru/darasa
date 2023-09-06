@@ -20,7 +20,7 @@ type Props = {
 type FormData = Database["public"]["Tables"]["grade"]["Row"];
 
 const schema = z.object({
-  grade: z.string(),
+  grade: z.string().nonempty("Grade is required"),
   class_id: z.string(),
   student_id: z.string(),
   id: z.string().optional(),
@@ -40,7 +40,7 @@ export default function AddGradeModal({ data, closeModal }: Props) {
     resolver: zodResolver(schema),
     defaultValues: {
       id,
-      grade: Number(grade),
+      grade,
       class_id,
       student_id,
     },
