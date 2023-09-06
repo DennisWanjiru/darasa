@@ -16,6 +16,7 @@ import {
 } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/actions";
 import InstructorClassesTable from "@/components/tables/InstructorClassesTable";
+import EditClassModal from "@/components/modals/EditClassModal";
 
 type OverallScore = {
   gpa: string;
@@ -197,6 +198,10 @@ export default async function Home() {
           </>
         )}
       </section>
+
+      {currentUser?.role === "instructor" ? (
+        <EditClassModal currentUser={currentUser} />
+      ) : null}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import Edit from "@/assets/edit.svg";
 import Delete from "@/assets/delete.svg";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { notify } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 type Props = {
   id: string;
@@ -15,6 +15,7 @@ type Props = {
 export default function ClassActions({ id, instructor_id }: Props) {
   const supabase = createClientComponentClient();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleDeleteClass = async () => {
     try {
@@ -35,7 +36,7 @@ export default function ClassActions({ id, instructor_id }: Props) {
   };
 
   const handleEditClass = () => {
-    router.push("/dashboard/classes?id=" + id);
+    router.push(`${pathname}?id=${id}`);
   };
 
   return (

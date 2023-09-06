@@ -24,12 +24,11 @@ export default function Button({
       onClick={onClick && onClick}
       disabled={isSubmitting}
       className={cn(
-        "flex items-center justify-center bg-primary text-white h-12 px-2.5 rounded-[10px] w-full hover:bg-gray-900",
+        "flex items-center justify-center bg-primary text-white h-12 px-2.5 rounded-[10px] w-full hover:bg-gray-900 disabled:bg-gray-500 disabled:cursor-not-allowed",
         className,
         {
           "bg-transparent border border-primary text-primary hover:bg-primary hover:text-white":
             variant === "inverse",
-          "bg-gray-500": isSubmitting,
         }
       )}
     >
