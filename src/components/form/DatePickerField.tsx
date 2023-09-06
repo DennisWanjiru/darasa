@@ -34,6 +34,7 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
 
       <DatePicker
         selected={selectedDate}
+        disabled={disabled}
         onChange={(date) => {
           if (date) {
             setDate(date);

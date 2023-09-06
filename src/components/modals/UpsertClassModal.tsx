@@ -60,6 +60,7 @@ export default function UpsertClassModal({
     handleSubmit,
     register,
     setValue,
+    setError,
     reset,
     getValues,
     formState: { errors, isSubmitting },
@@ -67,6 +68,8 @@ export default function UpsertClassModal({
     resolver: zodResolver(schema),
     defaultValues: {
       instructor_id: currentUser.id,
+      start_date: new Date().toISOString(),
+      end_date: new Date().toISOString(),
     },
   });
 
@@ -94,8 +97,14 @@ export default function UpsertClassModal({
       .select();
 
     if (error) {
-      // TODO: Unique code error
-      notify("Something went wrong!", "error");
+      if (error.code === "23505") {
+        setError("code", {
+          type: "custom",
+          message: "Class code already taken",
+        });
+      } else {
+        notify("Something went wrong!", "error");
+      }
     } else {
       reset();
       closeModal();
@@ -158,9 +167,13 @@ export default function UpsertClassModal({
         <DatePickerField
           label="Start Date"
           name="start_date"
+          disabled={
+            classData?.start_date
+              ? new Date(classData.start_date) < new Date()
+              : false
+          }
           defaultDate={new Date(classData?.start_date ?? Date.now())}
           setDate={(date) => {
-            console.log({ date: date.toISOString() });
             setValue("start_date", date.toISOString());
           }}
         />
@@ -175,6 +188,11 @@ export default function UpsertClassModal({
           setDate={(date) => {
             setValue("end_date", date.toISOString());
           }}
+          disabled={
+            classData?.end_date
+              ? new Date(classData.end_date) < new Date()
+              : false
+          }
         />
 
         <TextAreaField
