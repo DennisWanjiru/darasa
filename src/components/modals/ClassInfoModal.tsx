@@ -157,7 +157,7 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
           </section>
 
           {description ? (
-            <section className="mt-10">
+            <section className="mt-10 max-h-[55%] overflow-scroll scroll-m-4">
               <h4 className="mb-3 font-semibold">Description</h4>
               <p className="text-gray-600 text-sm">{description}</p>
             </section>

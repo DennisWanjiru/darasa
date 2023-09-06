@@ -3,7 +3,6 @@
 import { CurrentUser, Profile } from "@/lib/types";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { notify } from "./utils";
 
 export const getCurrentUser = async () => {
   const supabase = createServerComponentClient({ cookies });
@@ -15,15 +14,14 @@ export const getCurrentUser = async () => {
     const { data, error } = await supabase
       .from("profile")
       .select()
-      .match({ email: session.user.email })
-      .single();
+      .eq("email", session.user.email);
 
     if (error) {
-      notify("Something went wrong while fetching user", "error");
+      console.log("Something went wrong while fetching user", error);
       throw error;
     }
 
-    const user: Profile | null = data ?? null;
+    const user: Profile | null = data[0] ?? null;
 
     if (user) {
       const { data: role } = await supabase
