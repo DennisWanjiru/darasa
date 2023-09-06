@@ -32,7 +32,8 @@ const schema = z.object({
   code: z
     .string()
     .nonempty("Class code is required")
-    .min(4, "Name should be at least 2 letters"),
+    .min(6, "Code should be exactly 6 letters e.g. AB-123")
+    .max(6, "Code should be exactly 6 letters e.g. AB-123"),
   name: z
     .string()
     .nonempty("Name is required")
@@ -88,6 +89,12 @@ export default function UpsertClassModal({
     }
   }, [classData, setValue]);
 
+  const handleClose = () => {
+    reset();
+    setThumbnailUrl(null);
+    closeModal();
+  };
+
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
     const { data, error } = await supabase
       .from("class")
@@ -106,8 +113,7 @@ export default function UpsertClassModal({
         notify("Something went wrong!", "error");
       }
     } else {
-      reset();
-      closeModal();
+      handleClose();
       router.refresh();
       notify("The class was saved!");
     }
@@ -125,7 +131,7 @@ export default function UpsertClassModal({
   return (
     <Dialog
       aside
-      closeModal={closeModal}
+      closeModal={handleClose}
       title={id ? "Edit Class" : "Create Class"}
     >
       <form method="dialog" onSubmit={handleSubmit(onSubmit)}>
