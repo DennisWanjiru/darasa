@@ -21,9 +21,7 @@ export default function Index() {
   const supabase = createClientComponentClient();
   const [currentUser, setCurrentUser] = useState<CurrentUser>();
   const [categories, setCategories] = useState<Category[] | null>(null);
-  const [currentUserClasses, setCurrentUserClasses] = useState<
-    Record<string, boolean>
-  >({});
+  const [currentUserClasses, setCurrentUserClasses] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
@@ -44,13 +42,9 @@ export default function Index() {
         .select(`id, class(id)`)
         .eq("student_id", currentUser?.id ?? "");
 
-      let currentUserClasses: Record<string, boolean> = {};
-
-      enrollments
-        ? enrollments.forEach((enrollment) => {
-            // @ts-ignore
-            currentUserClasses[enrollment.class?.id] = true;
-          })
+      const currentUserClasses = enrollments
+        ? // @ts-ignore
+          (enrollments.map((enrollment) => enrollment.class?.id) as string[])
         : [];
 
       setCurrentUserClasses(currentUserClasses);
@@ -79,7 +73,7 @@ export default function Index() {
   const renderClassCards = (data: ClassType[]) => {
     const cards = data.map(
       ({ id, code, start_date, end_date, thumbnail, name, instructor_id }) => {
-        const isEnrolled = !!currentUserClasses[id];
+        const isEnrolled = currentUserClasses.includes(id);
 
         return (
           <ClassCard
@@ -129,7 +123,7 @@ export default function Index() {
         <ClassInfoModal
           selected={selected}
           onClose={() => setSelected(null)}
-          enroll={!currentUserClasses[selected]}
+          enroll={!currentUserClasses.includes(selected)}
         />
       ) : null}
     </div>

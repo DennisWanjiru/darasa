@@ -8,11 +8,9 @@ import Sidebar from "@/components/Sidebar";
 import { getCurrentUser } from "@/lib/actions";
 
 export const metadata: Metadata = {
-  title: "Darasa | Dahsboard",
+  title: "Darasa | Dashboard",
   description: "Darasa a school management system",
 };
-
-export const dynamic = "force-dynamic";
 
 export default async function DashboardLayout({
   children,
