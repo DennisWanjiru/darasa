@@ -125,13 +125,13 @@ export default async function Home() {
     : [];
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="mx-2 sm:max-w-6xl sm:mx-auto">
       <h2 className="font-bold text-2xl">
         Good {getTime()}, {currentUser?.prefix ? `${currentUser?.prefix}.` : ""}{" "}
         {currentUser?.name.split(" ")[0]}
       </h2>
 
-      <section className="flex justify-between items-center space-x-9 mt-11">
+      <section className="flex flex-col sm:flex-row justify-between items-center space-y-9 sm:space-y-0 sm:space-x-9 mt-11">
         <OverviewCard
           title={String(classes?.length ?? 0)}
           subTitle={
@@ -161,7 +161,7 @@ export default async function Home() {
         <section className="mt-10">
           <h3 className="font-semibold text-lg">Upcoming Classes</h3>
 
-          <div className="flex space-x-9 mt-4">
+          <div className="flex flex-col sm:flex-row space-y-9 sm:space-x-9 sm:space-y-0 mt-4">
             {upcomingClasses
               ? upcomingClasses
                   .slice(0, 3)
