@@ -58,9 +58,10 @@ export default function AddGradeModal({ data, closeModal }: Props) {
     if (error) {
       notify("Something went wrong!", "error");
     } else {
-      router.refresh();
-      closeModal();
       notify("Grade has been saved!");
+      closeModal();
+      // TODO: Find a better solution for improved UX behavior
+      document.location.reload();
     }
   };
 

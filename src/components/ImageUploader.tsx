@@ -7,6 +7,7 @@ import Image from "next/image";
 import Add from "@/assets/add.svg";
 import { Database } from "@/lib/schema";
 import { Profile } from "@/lib/types";
+import { notify } from "@/lib/utils";
 
 type Props = {
   uid: string;
@@ -33,7 +34,7 @@ export default function ImageUploader({ uid, url, onUpload }: Props) {
         const avatarUrl = URL.createObjectURL(data);
         setAvatarUrl(avatarUrl);
       } catch (error) {
-        console.log("Error downloading image: ", error);
+        notify("Error downloading image", "error");
       }
     }
 
@@ -64,8 +65,7 @@ export default function ImageUploader({ uid, url, onUpload }: Props) {
 
       onUpload(filePath);
     } catch (error) {
-      // TODO: show error
-      console.log("Error uploading avatar!");
+      notify("Error uploading avatar!", "error");
     } finally {
       setUploading(false);
     }

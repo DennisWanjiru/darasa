@@ -5,14 +5,15 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Session } from "@supabase/supabase-js";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 import InputField from "@/components/form/InputField";
 import Button from "@/components/Button";
 import TextAreaField from "@/components/form/TextAreaField";
 import ImageUploader from "@/components/ImageUploader";
 import { Database } from "@/lib/schema";
 import { Major, Role } from "@/lib/types";
-import { Session } from "@supabase/supabase-js";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import RadioInputField from "@/components/form/RadioInputField";
 import { prefixes } from "@/lib/contants";
 import { notify } from "@/lib/utils";

@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import React from "react";
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { type UseFormRegister } from "react-hook-form";
 
 interface TextAreaFieldProps {
   label: string;

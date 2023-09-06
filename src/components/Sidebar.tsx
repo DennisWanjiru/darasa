@@ -44,14 +44,16 @@ export default function Sidebar() {
               active={pathname.includes("/dashboard/classes")}
               Icon={Pile}
             />
-          ) : (
+          ) : null}
+
+          {user?.role === "student" ? (
             <NavLink
               title="Explore"
               to="/dashboard/explore"
               active={pathname === "/dashboard/explore"}
               Icon={Explore}
             />
-          )}
+          ) : null}
         </ul>
         {user ? <SidebarFooter user={user} /> : null}
       </nav>

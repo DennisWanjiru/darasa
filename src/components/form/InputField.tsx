@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { type UseFormRegister } from "react-hook-form";
 
 import ChevronDown from "@/assets/chevron-down.svg";
 

@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Add from "@/assets/add.svg";
 import { cn } from "@/lib/utils";
-import ProfileModal from "./modals/ProfileModal";
 import { Category, CurrentUser } from "@/lib/types";
 import UpsertClassModal from "./modals/UpsertClassModal";
 import { useState } from "react";
@@ -28,7 +27,6 @@ export default function AddClassLink({
           "flex items-center justify-center bg-primary text-white h-12 px-2.5 rounded-[10px] w-full",
           className
         )}
-        // @ts-ignore
         onClick={() => setIsOpen(!isOpen)}
       >
         <Image src={Add} alt="Plus Icon" className="mr-2.5" />

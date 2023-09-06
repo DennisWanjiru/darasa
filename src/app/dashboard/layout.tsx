@@ -5,7 +5,6 @@ import { cookies, headers } from "next/headers";
 
 import "../globals.css";
 import Sidebar from "@/components/Sidebar";
-import Modal from "@/components/modals/ProfileModal";
 import { getCurrentUser } from "@/lib/actions";
 
 export const metadata: Metadata = {

@@ -1,13 +1,11 @@
+import { cookies, headers } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+
 import AddClassLink from "@/components/AddClassLink";
-import Button from "@/components/Button";
 import EditClassModal from "@/components/modals/EditClassModal";
-import ProfileModal from "@/components/modals/ProfileModal";
 import InstructorClassesTable from "@/components/tables/InstructorClassesTable";
 import { getCurrentUser } from "@/lib/actions";
 import { getStatus } from "@/lib/utils";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies, headers } from "next/headers";
-import React from "react";
 
 export default async function Index() {
   const supabase = createServerComponentClient({ cookies });

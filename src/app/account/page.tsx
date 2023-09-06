@@ -1,7 +1,6 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import React from "react";
 import AccountForm from "./AccountForm";
 import Logo from "@/components/Logo";
 import { Major, Role } from "@/lib/types";
@@ -17,12 +16,13 @@ export default async function Account() {
     redirect("/");
   }
 
-  const { data: users } = await supabase
+  const { data: user } = await supabase
     .from("profile")
     .select("email")
-    .eq("email", session.user.email);
+    .match({ email: session.user.email })
+    .single();
 
-  if (users?.length) {
+  if (user) {
     redirect("/dashboard");
   }
 

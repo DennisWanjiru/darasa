@@ -1,7 +1,3 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-import AddGradeModal from "./modals/AddGradeModal";
 import Image from "next/image";
 import Edit from "@/assets/edit.svg";
 import { GradeData } from "@/lib/types";

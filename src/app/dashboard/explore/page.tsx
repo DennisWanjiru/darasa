@@ -1,14 +1,15 @@
 "use client";
 
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 import { getCurrentUser } from "@/lib/actions";
 import ClassCard from "@/components/ClassCard";
-import { ClassType, CurrentUser } from "@/lib/types";
+import type { ClassType, CurrentUser } from "@/lib/types";
 import { createAvatarUrl } from "@/lib/utils";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Supa from "@/assets/supaman.jpeg";
-import Link from "next/link";
 import ClassInfoModal from "@/components/modals/ClassInfoModal";
-import { useEffect, useState } from "react";
 import Loader from "@/components/Loader";
 
 type Category = {
@@ -39,8 +40,7 @@ export default function Index() {
         .eq("student_id", currentUser?.id ?? "");
 
       const currentUserClasses = enrollments
-        ? // @ts-ignore
-          (enrollments.map((enrollment) => enrollment.class?.id) as string[])
+        ? enrollments.map((enrollment) => enrollment.class[0]?.id)
         : [];
 
       setCurrentUserClasses(currentUserClasses);

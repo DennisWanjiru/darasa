@@ -7,13 +7,12 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { notify } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-export default function ClassActions({
-  id,
-  instructor_id,
-}: {
+type Props = {
   id: string;
   instructor_id: string;
-}) {
+};
+
+export default function ClassActions({ id, instructor_id }: Props) {
   const supabase = createClientComponentClient();
   const router = useRouter();
 
@@ -31,7 +30,7 @@ export default function ClassActions({
       notify("Classes has been deleted!");
       router.refresh();
     } catch (error) {
-      console.log({ error });
+      notify("Something went wrong!");
     }
   };
 

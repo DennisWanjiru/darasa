@@ -1,10 +1,11 @@
 "use client";
 
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useEffect, useState } from "react";
+
 import ClassDetailsTableRow from "@/components/tables/ClassDetailsTableRow";
 import AddGradeModal from "@/components/modals/AddGradeModal";
 import { Enrollment, GradeData } from "@/lib/types";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useEffect, useState } from "react";
 import Loader from "@/components/Loader";
 
 type Props = { params: { id: string } };

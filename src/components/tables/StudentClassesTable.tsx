@@ -1,5 +1,4 @@
 import { ClassType } from "@/lib/types";
-import InstructorClassRow from "./InstructorClassRow";
 import ClassRow from "./ClassRow";
 
 type Props = {

@@ -1,4 +1,4 @@
-import { UseFormRegister } from "react-hook-form";
+import { type UseFormRegister } from "react-hook-form";
 
 type Props = {
   value: string;
@@ -13,7 +13,6 @@ export default function RadioInputField({
   label,
   register,
 }: Props) {
-  console.log({ name, value, label });
   return (
     <label htmlFor={label} className="flex items-center">
       <input
