@@ -115,7 +115,7 @@ export default function ClassCard({
           </p>
         ) : null}
 
-        {type === "enroll" && currentUser ? (
+        {type === "enroll" ? (
           <>
             {isEnrolled ? (
               <p className="text-sm text-gray-600">Enrolled</p>
