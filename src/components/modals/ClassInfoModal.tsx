@@ -150,7 +150,7 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
             </section>
           ) : null}
 
-          <section className="mt-3 ">
+          <section className="mt-3">
             <div className="flex items-center space-x-3">
               <Image
                 className="rounded-full h-10 w-10"

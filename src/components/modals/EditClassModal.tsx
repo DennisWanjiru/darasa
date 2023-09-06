@@ -1,14 +1,17 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Category, ClassType } from "@/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import Dialog from ".";
-import ClassForm from "../form/ClassForm";
+import { Category, ClassType, CurrentUser } from "@/lib/types";
+import UpsertClassModal from "./UpsertClassModal";
 
-export default function EditClassModal() {
+type Props = {
+  currentUser: CurrentUser;
+};
+
+export default function EditClassModal({ currentUser }: Props) {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -44,20 +47,14 @@ export default function EditClassModal() {
 
   return (
     <>
-      {id ? (
-        <Dialog
-          title={classData?.code ?? ""}
+      {id && classData ? (
+        <UpsertClassModal
+          isOpen
+          classData={classData}
+          categories={categories}
+          currentUser={currentUser}
           closeModal={handleCLoseModal}
-          aside
-        >
-          {classData ? (
-            <ClassForm
-              categories={categories}
-              data={classData}
-              closeModal={handleCLoseModal}
-            />
-          ) : null}
-        </Dialog>
+        />
       ) : null}
     </>
   );

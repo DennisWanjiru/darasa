@@ -1,32 +1,33 @@
 "use client";
 
-import { cn, notify } from "@/lib/utils";
-import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
-import Cancel from "@/assets/cancel.svg";
-import ImageUploader from "../ImageUploader";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Database } from "@/lib/schema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 import InputField from "../form/InputField";
+import { notify } from "@/lib/utils";
+import ImageUploader from "../ImageUploader";
+import { Database } from "@/lib/schema";
 import TextAreaField from "../form/TextAreaField";
 import Button from "../Button";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Category, CurrentUser } from "@/lib/types";
-
+import { Category, ClassType, CurrentUser } from "@/lib/types";
 import DatePickerField from "../form/DatePickerField";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import Dialog from ".";
 
 type FormData = Database["public"]["Tables"]["class"]["Row"];
 type Props = {
   isOpen: boolean;
   closeModal: () => void;
   categories: Category[];
+  classData?: ClassType;
   currentUser: CurrentUser;
 };
 
 const schema = z.object({
+  id: z.string().optional(),
   thumbnail: z.string().optional(),
   code: z
     .string()
@@ -43,46 +44,51 @@ const schema = z.object({
   description: z.string().optional(),
 });
 
-export default function CreateClassModal({
+export default function UpsertClassModal({
   isOpen,
   categories,
   closeModal,
   currentUser,
+  classData,
 }: Props) {
   const supabase = createClientComponentClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
 
   const {
     handleSubmit,
     register,
     setValue,
-    control,
     reset,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      start_date: new Date().toISOString(),
-      end_date: new Date().toISOString(),
       instructor_id: currentUser.id,
     },
   });
+
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isOpen) {
-      // @ts-ignore
-      window.add_class.showModal();
-    } else {
-      // @ts-ignore
-      window.add_class.close();
+    if (classData) {
+      setValue("id", classData.id);
+      setValue("code", classData.code);
+      setValue("name", classData.name);
+      setValue("category_id", classData.category_id);
+      setValue("start_date", classData.start_date);
+      setValue("end_date", classData.end_date);
+      setValue("description", classData.description);
+      setThumbnailUrl(classData.thumbnail);
     }
-  }, [isOpen]);
+  }, [classData, setValue]);
 
   const onSubmit: SubmitHandler<FormData> = async (formData) => {
-    const { data: classData, error } = await supabase
+    const { data, error } = await supabase
       .from("class")
-      .insert({
+      .upsert({
         ...formData,
       })
       .select();
@@ -94,7 +100,7 @@ export default function CreateClassModal({
       reset();
       closeModal();
       router.refresh();
-      notify("The class was created!");
+      notify("The class was saved!");
     }
   };
 
@@ -103,29 +109,17 @@ export default function CreateClassModal({
     value: id,
   }));
 
-  return (
-    <dialog
-      id="add_class"
-      className={cn("modal justify-end align-bottom", {
-        "visible opacity-100": isOpen,
-      })}
-    >
-      <form
-        method="dialog"
-        onSubmit={handleSubmit(onSubmit)}
-        className="modal-box h-full border-b-raius rounded-e-none rounded-es-none rounded-tr-xl rounded-tl-xl bg-secondary text-primary w-[369px] mr-3 mt-7 max-h-screen"
-      >
-        <div className="flex items-center">
-          <button
-            type="button"
-            onClick={() => closeModal()}
-            className="btn bg-transparent hover:bg-transparent border-none"
-          >
-            <Image src={Cancel} alt="Close" />
-          </button>
-          <h3 className="font-bold text-lg ml-10">Add a Class</h3>
-        </div>
+  if (!isOpen) {
+    return null;
+  }
 
+  return (
+    <Dialog
+      aside
+      closeModal={closeModal}
+      title={id ? "Edit Class" : "Create Class"}
+    >
+      <form method="dialog" onSubmit={handleSubmit(onSubmit)}>
         <section className="flex mt-20 justify-center w-full">
           <div className="justify-center flex">
             <ImageUploader
@@ -164,14 +158,20 @@ export default function CreateClassModal({
         <DatePickerField
           label="Start Date"
           name="start_date"
+          defaultDate={new Date(classData?.start_date ?? Date.now())}
           setDate={(date) => {
+            console.log({ date: date.toISOString() });
             setValue("start_date", date.toISOString());
           }}
         />
+        {errors.start_date?.message ? (
+          <span className="text-red-700">{errors.start_date.message}</span>
+        ) : null}
 
         <DatePickerField
           label="End Date"
           name="end_date"
+          defaultDate={new Date(classData?.end_date ?? Date.now())}
           setDate={(date) => {
             setValue("end_date", date.toISOString());
           }}
@@ -184,6 +184,7 @@ export default function CreateClassModal({
           register={register}
           rows={10}
         />
+
         <Button
           icon
           type="submit"
@@ -191,6 +192,6 @@ export default function CreateClassModal({
           title="Save Class"
         />
       </form>
-    </dialog>
+    </Dialog>
   );
 }

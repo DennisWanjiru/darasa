@@ -5,7 +5,7 @@ import Add from "@/assets/add.svg";
 import { cn } from "@/lib/utils";
 import ProfileModal from "./modals/ProfileModal";
 import { Category, CurrentUser } from "@/lib/types";
-import CreateClassModal from "./modals/CreateClassModal";
+import UpsertClassModal from "./modals/UpsertClassModal";
 import { useState } from "react";
 
 type Props = {
@@ -36,7 +36,7 @@ export default function AddClassLink({
       </button>
 
       {currentUser ? (
-        <CreateClassModal
+        <UpsertClassModal
           isOpen={isOpen}
           categories={categories}
           currentUser={currentUser}

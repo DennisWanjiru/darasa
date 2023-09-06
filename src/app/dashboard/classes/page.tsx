@@ -83,7 +83,7 @@ export default async function Index() {
         </section>
       ) : null}
 
-      <EditClassModal />
+      {currentUser ? <EditClassModal currentUser={currentUser} /> : null}
     </div>
   );
 }
