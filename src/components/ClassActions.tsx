@@ -6,6 +6,7 @@ import Delete from "@/assets/delete.svg";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { notify } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 
 type Props = {
   id: string;
@@ -16,23 +17,23 @@ export default function ClassActions({ id, instructor_id }: Props) {
   const supabase = createClientComponentClient();
   const router = useRouter();
   const pathname = usePathname();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteClass = async () => {
-    try {
-      const { error } = await supabase
-        .from("class")
-        .delete()
-        .eq("id", id)
-        .eq("instructor_id", instructor_id);
+    setIsDeleting(true);
+    const { error } = await supabase
+      .from("class")
+      .delete()
+      .match({ id })
+      .match({ instructor_id });
 
-      if (error) {
-        throw error;
-      }
-      notify("Classes has been deleted!");
-      router.refresh();
-    } catch (error) {
+    if (error) {
       notify("Something went wrong!");
+      return;
     }
+
+    notify("Classes has been deleted!");
+    router.refresh();
   };
 
   const handleEditClass = () => {
@@ -48,14 +49,13 @@ export default function ClassActions({ id, instructor_id }: Props) {
         onClick={handleEditClass}
       />
 
-      <Image
-        height={30}
-        width={30}
-        src={Delete}
-        alt="delete"
+      <button
+        disabled={isDeleting}
+        className="cursor-pointer disabled:cursor-not-allowed"
         onClick={handleDeleteClass}
-        className="cursor-pointer"
-      />
+      >
+        <Image height={30} width={30} src={Delete} alt="delete" />
+      </button>
     </div>
   );
 }
