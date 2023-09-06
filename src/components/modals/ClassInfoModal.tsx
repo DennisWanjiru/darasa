@@ -135,6 +135,7 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
   };
 
   const isCompleted = getStatus(start_date, end_date) === "Completed";
+  const hasStarted = new Date(start_date) < new Date();
 
   return (
     <Dialog title={code} closeModal={onClose} aside>
@@ -181,7 +182,8 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
             </div>
 
             <p className="text-xs mt-1.5 text-gray-500">
-              Starts on {format(new Date(start_date), "MMMM dd")}
+              {hasStarted ? "Started" : "Starts"} on{" "}
+              {format(new Date(start_date), "MMMM dd")}
             </p>
 
             {studentsCount ? (
@@ -195,16 +197,16 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
               </p>
             )}
 
-            {enroll ? (
-              <Button
-                title="Enroll Now"
-                className="mt-8"
-                onClick={handleEnrollToClass}
-                isSubmitting={isSubmitting}
-              />
-            ) : (
+            {!isCompleted ? (
               <>
-                {!isCompleted ? (
+                {enroll ? (
+                  <Button
+                    title="Enroll Now"
+                    className="mt-8"
+                    onClick={handleEnrollToClass}
+                    isSubmitting={isSubmitting}
+                  />
+                ) : (
                   <Button
                     title="Unenroll"
                     className="mt-8"
@@ -212,9 +214,9 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
                     onClick={handleUnEnroll}
                     isSubmitting={isSubmitting}
                   />
-                ) : null}
+                )}
               </>
-            )}
+            ) : null}
           </section>
         </>
       ) : (

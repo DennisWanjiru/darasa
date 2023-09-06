@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import { getCurrentUser } from "@/lib/actions";
 import ClassCard from "@/components/ClassCard";
-import type { AppCategory, ClassType, CurrentUser } from "@/lib/types";
+import type { ClassType, CurrentUser } from "@/lib/types";
 import { createAvatarUrl, getStatus } from "@/lib/utils";
 import noImage from "@/assets/noImage.jpg";
 import ClassInfoModal from "@/components/modals/ClassInfoModal";
@@ -16,11 +15,6 @@ type Category = {
   id: string;
   name: string;
   class: ClassType[];
-};
-
-type JointEnrollment = {
-  id: string;
-  class: { id: string }[];
 };
 
 export default function Index() {
@@ -43,15 +37,14 @@ export default function Index() {
     };
 
     const fetchEnrollments = async () => {
-      const { data } = await supabase
+      const { data: enrollments } = await supabase
         .from("enrollment")
         .select(`id, class(id)`)
         .eq("student_id", currentUser?.id ?? "");
 
-      const enrollments: JointEnrollment[] | null = data;
-
       const currentUserClasses = enrollments
-        ? enrollments.map((enrollment) => enrollment.class[0]?.id)
+        ? // @ts-ignore
+          (enrollments.map((enrollment) => enrollment.class?.id) as string[])
         : [];
 
       setCurrentUserClasses(currentUserClasses);
