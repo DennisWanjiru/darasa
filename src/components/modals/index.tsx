@@ -17,6 +17,20 @@ export default function Dialog({ title, aside, children, closeModal }: Props) {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
 
   useEffect(() => {
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    };
+
+    window.addEventListener("keydown", close);
+
+    return () => {
+      window.removeEventListener("keydown", close);
+    };
+  }, [closeModal]);
+
+  useEffect(() => {
     dialogRef.current?.showModal();
   }, []);
 
