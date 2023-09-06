@@ -40,7 +40,8 @@ export default function Index() {
         .eq("student_id", currentUser?.id ?? "");
 
       const currentUserClasses = enrollments
-        ? enrollments.map((enrollment) => enrollment.class[0]?.id)
+        ? // @ts-ignore
+          (enrollments.map((enrollment) => enrollment.class?.id) as string[])
         : [];
 
       setCurrentUserClasses(currentUserClasses);

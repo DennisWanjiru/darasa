@@ -10,7 +10,7 @@ export default function SigniForm() {
 
   return (
     <main className="flex flex-col items-center justify-center h-screen bg-secondary px-8">
-      <Logo />
+      <Logo theme="light" />
 
       <section className="w-full md:w-2/3 lg:1/3 max-w-[500px] mt-10">
         <Auth

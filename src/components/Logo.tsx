@@ -5,7 +5,7 @@ import LogoIconDark from "@/assets/logo-dark.svg";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  theme?: "dark" | "light";
+  theme: "dark" | "light";
   className?: string;
 };
 

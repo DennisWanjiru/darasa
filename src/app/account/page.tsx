@@ -34,7 +34,7 @@ export default async function Account() {
 
   return (
     <main className="flex flex-col h-screen w-screen items-center justify-center px-16 md:p-0 text-primary">
-      <Logo />
+      <Logo theme="light" />
       <AccountForm
         session={session}
         roles={roles ?? []}
