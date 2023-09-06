@@ -81,7 +81,7 @@ export default function Index() {
                 <section className="mt-10">
                   <h3 className=" font-semibold text-xl">{name}</h3>
 
-                  <div className="grid grid-cols-3 grid-flow-dense gap-6 mt-5">
+                  <div className="grid sm:grid-cols-3 sm:grid-flow-dense gap-6 mt-5">
                     {classes
                       ? classes.map(
                           ({

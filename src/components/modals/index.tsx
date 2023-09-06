@@ -44,13 +44,13 @@ export default function Dialog({ title, aside, children, closeModal }: Props) {
     <dialog
       ref={dialogRef}
       className={cn("modal visible opacity-100 ", {
-        "justify-end align-bottom": aside,
+        "sm:justify-end align-bottom": aside,
       })}
     >
       <section
-        className={cn("modal-box bg-secondary text-primary", {
-          "rounded-xl  w-full max-w-[700px] p-8": !aside,
-          "h-screen max-h-[calc(100vh)] border-b-raius rounded-e-none rounded-es-none rounded-tr-xl rounded-tl-xl w-[369px] mr-3 mt-4":
+        className={cn("modal-box bg-secondary text-primary m-0", {
+          "rounded-xl w-full max-w-[700px] p-8": !aside,
+          "h-screen max-h-[calc(100vh)] border-b-raius rounded-none sm:rounded-tr-xl sm:rounded-tl-xl w-full sm:w-[369px] sm:mr-3 sm:mt-4":
             aside,
         })}
       >
