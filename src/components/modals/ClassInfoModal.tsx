@@ -121,9 +121,14 @@ export default function ClassInfoModal({ onClose, selected, enroll }: Props) {
         .delete()
         .match({ class_id: id, student_id: currentUser.id });
 
+      const { error: gradeError } = await supabase
+        .from("grade")
+        .delete()
+        .match({ class_id: id, student_id: currentUser.id });
+
       setIsSubmitting(false);
 
-      if (error) {
+      if (error || gradeError) {
         notify("Something went wrong!", "error");
       } else {
         notify("You have unenrolled from " + code);
